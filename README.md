@@ -121,6 +121,16 @@ go test ./...         # 单元 + 契约 + 转换测试
 go run ./examples/goldenpath   # 运行 Golden Path
 ```
 
+## 命令行（消费者之头）
+
+```bash
+go run ./cmd/elc devices                                    # 发现并列出设备
+go run ./cmd/elc exec fake-001 device.info.get              # 执行能力
+go run ./cmd/elc exec fake-001 device.flash partition=boot image=boot.img version=2.0.0
+go run ./cmd/elc --tcp 127.0.0.1:58732 exec <设备> device.execute command="echo hi"
+go run ./cmd/elc --grpc <addr> devices                      # 远程后端
+```
+
 重新生成 protobuf（消息 + gRPC service）：
 
 ```bash
