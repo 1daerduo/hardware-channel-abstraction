@@ -72,6 +72,24 @@ func (c *Client) ListCapabilities(deviceID domain.DeviceID) ([]domain.Capability
 	return out, nil
 }
 
+// DescribeCapabilities returns full capability descriptors.
+func (c *Client) DescribeCapabilities(deviceID domain.DeviceID) ([]domain.Capability, error) {
+	resp, err := c.grpc.DescribeCapabilities(context.Background(), &channelv1.ListCapabilitiesRequest{DeviceId: string(deviceID)})
+	if err != nil {
+		return nil, err
+	}
+	if resp.Error != nil {
+		return nil, convert.ErrorFromProto(resp.Error)
+	}
+	var out []domain.Capability
+	for _, cap := range resp.Capabilities {
+		if d := convert.CapabilityFromProto(cap); d != nil {
+			out = append(out, *d)
+		}
+	}
+	return out, nil
+}
+
 // CreateSession opens a session.
 func (c *Client) CreateSession(principal string, deviceID domain.DeviceID, ttl time.Duration) (*domain.Session, error) {
 	resp, err := c.grpc.CreateSession(context.Background(), &channelv1.CreateSessionRequest{

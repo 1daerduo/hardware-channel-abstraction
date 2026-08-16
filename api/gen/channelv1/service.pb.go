@@ -298,6 +298,58 @@ func (x *ListCapabilitiesResponse) GetError() *Error {
 	return nil
 }
 
+type DescribeCapabilitiesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Capabilities  []*Capability          `protobuf:"bytes,1,rep,name=capabilities,proto3" json:"capabilities,omitempty"`
+	Error         *Error                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DescribeCapabilitiesResponse) Reset() {
+	*x = DescribeCapabilitiesResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DescribeCapabilitiesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DescribeCapabilitiesResponse) ProtoMessage() {}
+
+func (x *DescribeCapabilitiesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DescribeCapabilitiesResponse.ProtoReflect.Descriptor instead.
+func (*DescribeCapabilitiesResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DescribeCapabilitiesResponse) GetCapabilities() []*Capability {
+	if x != nil {
+		return x.Capabilities
+	}
+	return nil
+}
+
+func (x *DescribeCapabilitiesResponse) GetError() *Error {
+	if x != nil {
+		return x.Error
+	}
+	return nil
+}
+
 type CreateSessionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Principal     string                 `protobuf:"bytes,1,opt,name=principal,proto3" json:"principal,omitempty"`
@@ -309,7 +361,7 @@ type CreateSessionRequest struct {
 
 func (x *CreateSessionRequest) Reset() {
 	*x = CreateSessionRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[6]
+	mi := &file_channel_v1_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -321,7 +373,7 @@ func (x *CreateSessionRequest) String() string {
 func (*CreateSessionRequest) ProtoMessage() {}
 
 func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[6]
+	mi := &file_channel_v1_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -334,7 +386,7 @@ func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSessionRequest.ProtoReflect.Descriptor instead.
 func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{6}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *CreateSessionRequest) GetPrincipal() string {
@@ -368,7 +420,7 @@ type CreateSessionResponse struct {
 
 func (x *CreateSessionResponse) Reset() {
 	*x = CreateSessionResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[7]
+	mi := &file_channel_v1_service_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -380,7 +432,7 @@ func (x *CreateSessionResponse) String() string {
 func (*CreateSessionResponse) ProtoMessage() {}
 
 func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[7]
+	mi := &file_channel_v1_service_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -393,7 +445,7 @@ func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSessionResponse.ProtoReflect.Descriptor instead.
 func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{7}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CreateSessionResponse) GetSession() *Session {
@@ -424,7 +476,7 @@ type ExecuteRequest struct {
 
 func (x *ExecuteRequest) Reset() {
 	*x = ExecuteRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[8]
+	mi := &file_channel_v1_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -436,7 +488,7 @@ func (x *ExecuteRequest) String() string {
 func (*ExecuteRequest) ProtoMessage() {}
 
 func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[8]
+	mi := &file_channel_v1_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -449,7 +501,7 @@ func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExecuteRequest.ProtoReflect.Descriptor instead.
 func (*ExecuteRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{8}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ExecuteRequest) GetCapability() string {
@@ -504,7 +556,7 @@ type ExecuteResponse struct {
 
 func (x *ExecuteResponse) Reset() {
 	*x = ExecuteResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[9]
+	mi := &file_channel_v1_service_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -516,7 +568,7 @@ func (x *ExecuteResponse) String() string {
 func (*ExecuteResponse) ProtoMessage() {}
 
 func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[9]
+	mi := &file_channel_v1_service_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -529,7 +581,7 @@ func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExecuteResponse.ProtoReflect.Descriptor instead.
 func (*ExecuteResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{9}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ExecuteResponse) GetResult() *OperationResult {
@@ -563,6 +615,9 @@ const file_channel_v1_service_proto_rawDesc = "" +
 	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\"t\n" +
 	"\x18ListCapabilitiesResponse\x12\"\n" +
 	"\fcapabilities\x18\x01 \x03(\tR\fcapabilities\x124\n" +
+	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error\"\x9d\x01\n" +
+	"\x1cDescribeCapabilitiesResponse\x12G\n" +
+	"\fcapabilities\x18\x01 \x03(\v2#.embeddedloop.channel.v1.CapabilityR\fcapabilities\x124\n" +
 	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error\"h\n" +
 	"\x14CreateSessionRequest\x12\x1c\n" +
 	"\tprincipal\x18\x01 \x01(\tR\tprincipal\x12\x1b\n" +
@@ -588,11 +643,12 @@ const file_channel_v1_service_proto_rawDesc = "" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\x89\x01\n" +
 	"\x0fExecuteResponse\x12@\n" +
 	"\x06result\x18\x01 \x01(\v2(.embeddedloop.channel.v1.OperationResultR\x06result\x124\n" +
-	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error2\xa7\x04\n" +
+	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error2\xa8\x05\n" +
 	"\x13ConnectivityService\x12_\n" +
 	"\bDiscover\x12(.embeddedloop.channel.v1.DiscoverRequest\x1a).embeddedloop.channel.v1.DiscoverResponse\x12h\n" +
 	"\vListDevices\x12+.embeddedloop.channel.v1.ListDevicesRequest\x1a,.embeddedloop.channel.v1.ListDevicesResponse\x12w\n" +
-	"\x10ListCapabilities\x120.embeddedloop.channel.v1.ListCapabilitiesRequest\x1a1.embeddedloop.channel.v1.ListCapabilitiesResponse\x12n\n" +
+	"\x10ListCapabilities\x120.embeddedloop.channel.v1.ListCapabilitiesRequest\x1a1.embeddedloop.channel.v1.ListCapabilitiesResponse\x12\x7f\n" +
+	"\x14DescribeCapabilities\x120.embeddedloop.channel.v1.ListCapabilitiesRequest\x1a5.embeddedloop.channel.v1.DescribeCapabilitiesResponse\x12n\n" +
 	"\rCreateSession\x12-.embeddedloop.channel.v1.CreateSessionRequest\x1a..embeddedloop.channel.v1.CreateSessionResponse\x12\\\n" +
 	"\aExecute\x12'.embeddedloop.channel.v1.ExecuteRequest\x1a(.embeddedloop.channel.v1.ExecuteResponseB?Z=example.com/embedded-loop-channel/api/gen/channelv1;channelv1b\x06proto3"
 
@@ -608,50 +664,56 @@ func file_channel_v1_service_proto_rawDescGZIP() []byte {
 	return file_channel_v1_service_proto_rawDescData
 }
 
-var file_channel_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_channel_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_channel_v1_service_proto_goTypes = []any{
-	(*DiscoverRequest)(nil),          // 0: embeddedloop.channel.v1.DiscoverRequest
-	(*DiscoverResponse)(nil),         // 1: embeddedloop.channel.v1.DiscoverResponse
-	(*ListDevicesRequest)(nil),       // 2: embeddedloop.channel.v1.ListDevicesRequest
-	(*ListDevicesResponse)(nil),      // 3: embeddedloop.channel.v1.ListDevicesResponse
-	(*ListCapabilitiesRequest)(nil),  // 4: embeddedloop.channel.v1.ListCapabilitiesRequest
-	(*ListCapabilitiesResponse)(nil), // 5: embeddedloop.channel.v1.ListCapabilitiesResponse
-	(*CreateSessionRequest)(nil),     // 6: embeddedloop.channel.v1.CreateSessionRequest
-	(*CreateSessionResponse)(nil),    // 7: embeddedloop.channel.v1.CreateSessionResponse
-	(*ExecuteRequest)(nil),           // 8: embeddedloop.channel.v1.ExecuteRequest
-	(*ExecuteResponse)(nil),          // 9: embeddedloop.channel.v1.ExecuteResponse
-	nil,                              // 10: embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
-	(*Device)(nil),                   // 11: embeddedloop.channel.v1.Device
-	(*Error)(nil),                    // 12: embeddedloop.channel.v1.Error
-	(*Session)(nil),                  // 13: embeddedloop.channel.v1.Session
-	(*OperationResult)(nil),          // 14: embeddedloop.channel.v1.OperationResult
+	(*DiscoverRequest)(nil),              // 0: embeddedloop.channel.v1.DiscoverRequest
+	(*DiscoverResponse)(nil),             // 1: embeddedloop.channel.v1.DiscoverResponse
+	(*ListDevicesRequest)(nil),           // 2: embeddedloop.channel.v1.ListDevicesRequest
+	(*ListDevicesResponse)(nil),          // 3: embeddedloop.channel.v1.ListDevicesResponse
+	(*ListCapabilitiesRequest)(nil),      // 4: embeddedloop.channel.v1.ListCapabilitiesRequest
+	(*ListCapabilitiesResponse)(nil),     // 5: embeddedloop.channel.v1.ListCapabilitiesResponse
+	(*DescribeCapabilitiesResponse)(nil), // 6: embeddedloop.channel.v1.DescribeCapabilitiesResponse
+	(*CreateSessionRequest)(nil),         // 7: embeddedloop.channel.v1.CreateSessionRequest
+	(*CreateSessionResponse)(nil),        // 8: embeddedloop.channel.v1.CreateSessionResponse
+	(*ExecuteRequest)(nil),               // 9: embeddedloop.channel.v1.ExecuteRequest
+	(*ExecuteResponse)(nil),              // 10: embeddedloop.channel.v1.ExecuteResponse
+	nil,                                  // 11: embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
+	(*Device)(nil),                       // 12: embeddedloop.channel.v1.Device
+	(*Error)(nil),                        // 13: embeddedloop.channel.v1.Error
+	(*Capability)(nil),                   // 14: embeddedloop.channel.v1.Capability
+	(*Session)(nil),                      // 15: embeddedloop.channel.v1.Session
+	(*OperationResult)(nil),              // 16: embeddedloop.channel.v1.OperationResult
 }
 var file_channel_v1_service_proto_depIdxs = []int32{
-	11, // 0: embeddedloop.channel.v1.DiscoverResponse.devices:type_name -> embeddedloop.channel.v1.Device
-	12, // 1: embeddedloop.channel.v1.DiscoverResponse.error:type_name -> embeddedloop.channel.v1.Error
-	11, // 2: embeddedloop.channel.v1.ListDevicesResponse.devices:type_name -> embeddedloop.channel.v1.Device
-	12, // 3: embeddedloop.channel.v1.ListDevicesResponse.error:type_name -> embeddedloop.channel.v1.Error
-	12, // 4: embeddedloop.channel.v1.ListCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
-	13, // 5: embeddedloop.channel.v1.CreateSessionResponse.session:type_name -> embeddedloop.channel.v1.Session
-	12, // 6: embeddedloop.channel.v1.CreateSessionResponse.error:type_name -> embeddedloop.channel.v1.Error
-	10, // 7: embeddedloop.channel.v1.ExecuteRequest.parameters:type_name -> embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
-	14, // 8: embeddedloop.channel.v1.ExecuteResponse.result:type_name -> embeddedloop.channel.v1.OperationResult
-	12, // 9: embeddedloop.channel.v1.ExecuteResponse.error:type_name -> embeddedloop.channel.v1.Error
-	0,  // 10: embeddedloop.channel.v1.ConnectivityService.Discover:input_type -> embeddedloop.channel.v1.DiscoverRequest
-	2,  // 11: embeddedloop.channel.v1.ConnectivityService.ListDevices:input_type -> embeddedloop.channel.v1.ListDevicesRequest
-	4,  // 12: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
-	6,  // 13: embeddedloop.channel.v1.ConnectivityService.CreateSession:input_type -> embeddedloop.channel.v1.CreateSessionRequest
-	8,  // 14: embeddedloop.channel.v1.ConnectivityService.Execute:input_type -> embeddedloop.channel.v1.ExecuteRequest
-	1,  // 15: embeddedloop.channel.v1.ConnectivityService.Discover:output_type -> embeddedloop.channel.v1.DiscoverResponse
-	3,  // 16: embeddedloop.channel.v1.ConnectivityService.ListDevices:output_type -> embeddedloop.channel.v1.ListDevicesResponse
-	5,  // 17: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:output_type -> embeddedloop.channel.v1.ListCapabilitiesResponse
-	7,  // 18: embeddedloop.channel.v1.ConnectivityService.CreateSession:output_type -> embeddedloop.channel.v1.CreateSessionResponse
-	9,  // 19: embeddedloop.channel.v1.ConnectivityService.Execute:output_type -> embeddedloop.channel.v1.ExecuteResponse
-	15, // [15:20] is the sub-list for method output_type
-	10, // [10:15] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	12, // 0: embeddedloop.channel.v1.DiscoverResponse.devices:type_name -> embeddedloop.channel.v1.Device
+	13, // 1: embeddedloop.channel.v1.DiscoverResponse.error:type_name -> embeddedloop.channel.v1.Error
+	12, // 2: embeddedloop.channel.v1.ListDevicesResponse.devices:type_name -> embeddedloop.channel.v1.Device
+	13, // 3: embeddedloop.channel.v1.ListDevicesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	13, // 4: embeddedloop.channel.v1.ListCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	14, // 5: embeddedloop.channel.v1.DescribeCapabilitiesResponse.capabilities:type_name -> embeddedloop.channel.v1.Capability
+	13, // 6: embeddedloop.channel.v1.DescribeCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	15, // 7: embeddedloop.channel.v1.CreateSessionResponse.session:type_name -> embeddedloop.channel.v1.Session
+	13, // 8: embeddedloop.channel.v1.CreateSessionResponse.error:type_name -> embeddedloop.channel.v1.Error
+	11, // 9: embeddedloop.channel.v1.ExecuteRequest.parameters:type_name -> embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
+	16, // 10: embeddedloop.channel.v1.ExecuteResponse.result:type_name -> embeddedloop.channel.v1.OperationResult
+	13, // 11: embeddedloop.channel.v1.ExecuteResponse.error:type_name -> embeddedloop.channel.v1.Error
+	0,  // 12: embeddedloop.channel.v1.ConnectivityService.Discover:input_type -> embeddedloop.channel.v1.DiscoverRequest
+	2,  // 13: embeddedloop.channel.v1.ConnectivityService.ListDevices:input_type -> embeddedloop.channel.v1.ListDevicesRequest
+	4,  // 14: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
+	4,  // 15: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
+	7,  // 16: embeddedloop.channel.v1.ConnectivityService.CreateSession:input_type -> embeddedloop.channel.v1.CreateSessionRequest
+	9,  // 17: embeddedloop.channel.v1.ConnectivityService.Execute:input_type -> embeddedloop.channel.v1.ExecuteRequest
+	1,  // 18: embeddedloop.channel.v1.ConnectivityService.Discover:output_type -> embeddedloop.channel.v1.DiscoverResponse
+	3,  // 19: embeddedloop.channel.v1.ConnectivityService.ListDevices:output_type -> embeddedloop.channel.v1.ListDevicesResponse
+	5,  // 20: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:output_type -> embeddedloop.channel.v1.ListCapabilitiesResponse
+	6,  // 21: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:output_type -> embeddedloop.channel.v1.DescribeCapabilitiesResponse
+	8,  // 22: embeddedloop.channel.v1.ConnectivityService.CreateSession:output_type -> embeddedloop.channel.v1.CreateSessionResponse
+	10, // 23: embeddedloop.channel.v1.ConnectivityService.Execute:output_type -> embeddedloop.channel.v1.ExecuteResponse
+	18, // [18:24] is the sub-list for method output_type
+	12, // [12:18] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_channel_v1_service_proto_init() }
@@ -666,7 +728,7 @@ func file_channel_v1_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_channel_v1_service_proto_rawDesc), len(file_channel_v1_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -86,6 +86,19 @@ func (s *Server) ListCapabilities(ctx context.Context, req *channelv1.ListCapabi
 	return resp, nil
 }
 
+// DescribeCapabilities returns full capability descriptors.
+func (s *Server) DescribeCapabilities(_ context.Context, req *channelv1.ListCapabilitiesRequest) (*channelv1.DescribeCapabilitiesResponse, error) {
+	caps, err := s.client.DescribeCapabilities(domain.DeviceID(req.DeviceId))
+	if err != nil {
+		return &channelv1.DescribeCapabilitiesResponse{Error: errToProto(err)}, nil
+	}
+	resp := &channelv1.DescribeCapabilitiesResponse{}
+	for i := range caps {
+		resp.Capabilities = append(resp.Capabilities, convert.CapabilityToProto(&caps[i]))
+	}
+	return resp, nil
+}
+
 // CreateSession opens a session.
 func (s *Server) CreateSession(ctx context.Context, req *channelv1.CreateSessionRequest) (*channelv1.CreateSessionResponse, error) {
 	sess, err := s.client.CreateSession(req.Principal, domain.DeviceID(req.DeviceId), time.Duration(req.TtlMs)*time.Millisecond)

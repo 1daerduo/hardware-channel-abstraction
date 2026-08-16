@@ -14,6 +14,7 @@ service ConnectivityService {
   rpc Discover(DiscoverRequest) returns (DiscoverResponse);
   rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse);
   rpc ListCapabilities(ListCapabilitiesRequest) returns (ListCapabilitiesResponse);
+  rpc DescribeCapabilities(ListCapabilitiesRequest) returns (DescribeCapabilitiesResponse);
   rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
   rpc Execute(ExecuteRequest) returns (ExecuteResponse);
 }
@@ -38,6 +39,11 @@ message ListCapabilitiesRequest {
 
 message ListCapabilitiesResponse {
   repeated string capabilities = 1;
+  Error error = 2;
+}
+
+message DescribeCapabilitiesResponse {
+  repeated Capability capabilities = 1;
   Error error = 2;
 }
 

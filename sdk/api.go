@@ -16,6 +16,7 @@ type ConnectivityAPI interface {
 	Discover(ctx context.Context) ([]*domain.Device, error)
 	ListDevices() []*domain.Device
 	ListCapabilities(deviceID domain.DeviceID) ([]domain.CapabilityName, error)
+	DescribeCapabilities(deviceID domain.DeviceID) ([]domain.Capability, error)
 	CreateSession(principal string, deviceID domain.DeviceID, ttl time.Duration) (*domain.Session, error)
 	Execute(ctx context.Context, req domain.OperationRequest) (*domain.OperationResult, error)
 }

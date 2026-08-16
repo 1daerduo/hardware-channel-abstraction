@@ -24,11 +24,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ConnectivityService_Discover_FullMethodName         = "/embeddedloop.channel.v1.ConnectivityService/Discover"
-	ConnectivityService_ListDevices_FullMethodName      = "/embeddedloop.channel.v1.ConnectivityService/ListDevices"
-	ConnectivityService_ListCapabilities_FullMethodName = "/embeddedloop.channel.v1.ConnectivityService/ListCapabilities"
-	ConnectivityService_CreateSession_FullMethodName    = "/embeddedloop.channel.v1.ConnectivityService/CreateSession"
-	ConnectivityService_Execute_FullMethodName          = "/embeddedloop.channel.v1.ConnectivityService/Execute"
+	ConnectivityService_Discover_FullMethodName             = "/embeddedloop.channel.v1.ConnectivityService/Discover"
+	ConnectivityService_ListDevices_FullMethodName          = "/embeddedloop.channel.v1.ConnectivityService/ListDevices"
+	ConnectivityService_ListCapabilities_FullMethodName     = "/embeddedloop.channel.v1.ConnectivityService/ListCapabilities"
+	ConnectivityService_DescribeCapabilities_FullMethodName = "/embeddedloop.channel.v1.ConnectivityService/DescribeCapabilities"
+	ConnectivityService_CreateSession_FullMethodName        = "/embeddedloop.channel.v1.ConnectivityService/CreateSession"
+	ConnectivityService_Execute_FullMethodName              = "/embeddedloop.channel.v1.ConnectivityService/Execute"
 )
 
 // ConnectivityServiceClient is the client API for ConnectivityService service.
@@ -38,6 +39,7 @@ type ConnectivityServiceClient interface {
 	Discover(ctx context.Context, in *DiscoverRequest, opts ...grpc.CallOption) (*DiscoverResponse, error)
 	ListDevices(ctx context.Context, in *ListDevicesRequest, opts ...grpc.CallOption) (*ListDevicesResponse, error)
 	ListCapabilities(ctx context.Context, in *ListCapabilitiesRequest, opts ...grpc.CallOption) (*ListCapabilitiesResponse, error)
+	DescribeCapabilities(ctx context.Context, in *ListCapabilitiesRequest, opts ...grpc.CallOption) (*DescribeCapabilitiesResponse, error)
 	CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error)
 	Execute(ctx context.Context, in *ExecuteRequest, opts ...grpc.CallOption) (*ExecuteResponse, error)
 }
@@ -80,6 +82,16 @@ func (c *connectivityServiceClient) ListCapabilities(ctx context.Context, in *Li
 	return out, nil
 }
 
+func (c *connectivityServiceClient) DescribeCapabilities(ctx context.Context, in *ListCapabilitiesRequest, opts ...grpc.CallOption) (*DescribeCapabilitiesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DescribeCapabilitiesResponse)
+	err := c.cc.Invoke(ctx, ConnectivityService_DescribeCapabilities_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *connectivityServiceClient) CreateSession(ctx context.Context, in *CreateSessionRequest, opts ...grpc.CallOption) (*CreateSessionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateSessionResponse)
@@ -107,6 +119,7 @@ type ConnectivityServiceServer interface {
 	Discover(context.Context, *DiscoverRequest) (*DiscoverResponse, error)
 	ListDevices(context.Context, *ListDevicesRequest) (*ListDevicesResponse, error)
 	ListCapabilities(context.Context, *ListCapabilitiesRequest) (*ListCapabilitiesResponse, error)
+	DescribeCapabilities(context.Context, *ListCapabilitiesRequest) (*DescribeCapabilitiesResponse, error)
 	CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error)
 	Execute(context.Context, *ExecuteRequest) (*ExecuteResponse, error)
 	mustEmbedUnimplementedConnectivityServiceServer()
@@ -127,6 +140,9 @@ func (UnimplementedConnectivityServiceServer) ListDevices(context.Context, *List
 }
 func (UnimplementedConnectivityServiceServer) ListCapabilities(context.Context, *ListCapabilitiesRequest) (*ListCapabilitiesResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListCapabilities not implemented")
+}
+func (UnimplementedConnectivityServiceServer) DescribeCapabilities(context.Context, *ListCapabilitiesRequest) (*DescribeCapabilitiesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DescribeCapabilities not implemented")
 }
 func (UnimplementedConnectivityServiceServer) CreateSession(context.Context, *CreateSessionRequest) (*CreateSessionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateSession not implemented")
@@ -209,6 +225,24 @@ func _ConnectivityService_ListCapabilities_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ConnectivityService_DescribeCapabilities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCapabilitiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConnectivityServiceServer).DescribeCapabilities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ConnectivityService_DescribeCapabilities_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConnectivityServiceServer).DescribeCapabilities(ctx, req.(*ListCapabilitiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ConnectivityService_CreateSession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateSessionRequest)
 	if err := dec(in); err != nil {
@@ -263,6 +297,10 @@ var ConnectivityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListCapabilities",
 			Handler:    _ConnectivityService_ListCapabilities_Handler,
+		},
+		{
+			MethodName: "DescribeCapabilities",
+			Handler:    _ConnectivityService_DescribeCapabilities_Handler,
 		},
 		{
 			MethodName: "CreateSession",

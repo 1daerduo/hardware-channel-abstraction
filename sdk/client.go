@@ -112,6 +112,31 @@ func (c *Client) ListCapabilities(deviceID domain.DeviceID) ([]domain.Capability
 	return out, nil
 }
 
+// DescribeCapabilities returns the full capability descriptors (name +
+// description + input/output schema) of a device, not just names. This is the
+// LLM/CLI-facing introspection: each entry is exactly a tool definition.
+func (c *Client) DescribeCapabilities(deviceID domain.DeviceID) ([]domain.Capability, error) {
+	channels := c.reg.ChannelsByDevice(deviceID)
+	if len(channels) == 0 {
+		return nil, domain.NewError(domain.CodeUnknown, domain.CategoryDiscovery, "device has no channels")
+	}
+	seen := map[domain.CapabilityName]bool{}
+	var out []domain.Capability
+	for _, ch := range channels {
+		plugin, err := c.plugins.Get(ch.PluginID)
+		if err != nil {
+			continue
+		}
+		for _, cap := range plugin.Capabilities(ch) {
+			if !seen[cap.Name] {
+				seen[cap.Name] = true
+				out = append(out, cap)
+			}
+		}
+	}
+	return out, nil
+}
+
 // CreateSession opens a Session for principal bound to device.
 func (c *Client) CreateSession(principal string, deviceID domain.DeviceID, ttl time.Duration) (*domain.Session, error) {
 	return c.sessions.Create(principal, deviceID, ttl)
