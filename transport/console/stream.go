@@ -1,4 +1,4 @@
-package serial
+package console
 
 import (
 	"bytes"
@@ -9,8 +9,7 @@ import (
 )
 
 // consoleStream is a line-buffered, sequenced stream over a Console's reader
-// pump. It satisfies sdk.Stream with at-least-once delivery and a close
-// reason.
+// pump.
 type consoleStream struct {
 	console *Console
 	id      string
@@ -27,10 +26,8 @@ func newConsoleStream(c *Console) *consoleStream {
 	return &consoleStream{console: c, ch: make(chan []byte, 256)}
 }
 
-// ID returns the stable stream id.
 func (s *consoleStream) ID() string { return s.id }
 
-// push delivers raw bytes from the pump (non-blocking; drops on backpressure).
 func (s *consoleStream) push(b []byte) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -43,7 +40,6 @@ func (s *consoleStream) push(b []byte) {
 	}
 }
 
-// Read returns the next full line as a sequenced chunk.
 func (s *consoleStream) Read(ctx context.Context) (sdk.StreamChunk, error) {
 	for {
 		s.mu.Lock()
@@ -71,14 +67,12 @@ func (s *consoleStream) Read(ctx context.Context) (sdk.StreamChunk, error) {
 	}
 }
 
-// Cursor returns the highest sequence delivered so far.
 func (s *consoleStream) Cursor() uint64 {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.seq
 }
 
-// Close terminates the stream with a close reason and unregisters it.
 func (s *consoleStream) Close(reason string) error {
 	s.console.mu.Lock()
 	delete(s.console.subs, s.id)
@@ -91,9 +85,7 @@ func (s *consoleStream) Close(reason string) error {
 	return nil
 }
 
-// extractLine pops a full line (up to '\n') from the pending buffer and trims
-// both leading and trailing '\r'. U-Boot uses "\n\r" line endings, so the '\r'
-// of a line break lands at the start of the NEXT line.
+// extractLine pops a full line (up to '\n') and trims leading/trailing '\r'.
 func extractLine(p *[]byte) []byte {
 	idx := bytes.IndexByte(*p, '\n')
 	if idx < 0 {

@@ -24,9 +24,11 @@ import (
 	"example.com/embedded-loop-channel/plugin/mcp"
 	pluginregistry "example.com/embedded-loop-channel/plugin/registry"
 	pluginsdk "example.com/embedded-loop-channel/plugin/sdk"
+	plugintcp "example.com/embedded-loop-channel/plugin/tcp"
 	"example.com/embedded-loop-channel/plugin/uart"
 	"example.com/embedded-loop-channel/sdk"
 	serialtransport "example.com/embedded-loop-channel/transport/serial"
+	transporttcp "example.com/embedded-loop-channel/transport/tcp"
 )
 
 // Runtime is the assembled system. It exposes the high-level client plus the
@@ -44,11 +46,16 @@ type Runtime struct {
 	Secrets       *security.SecretStore
 	Artifacts     *artifact.Service
 	RealConsoles  []*serialtransport.Console
+	RealTCPs      []*transporttcp.Console
 }
 
-// Close releases any real serial ports opened during Bootstrap.
+// Close releases any real serial ports / TCP connections opened during
+// Bootstrap.
 func (rt *Runtime) Close() {
 	for _, c := range rt.RealConsoles {
+		_ = c.Close()
+	}
+	for _, c := range rt.RealTCPs {
 		_ = c.Close()
 	}
 }
@@ -59,6 +66,7 @@ type Option func(*config)
 type config struct {
 	devices    []*fake.Device
 	realSerial []serialConfig
+	tcpAddrs   []string
 	lockTTL    time.Duration
 	maxRetries int
 }
@@ -77,6 +85,11 @@ func WithDevices(devices ...*fake.Device) Option {
 // console device at startup.
 func WithRealSerial(path string, baud int) Option {
 	return func(c *config) { c.realSerial = append(c.realSerial, serialConfig{path: path, baud: baud}) }
+}
+
+// WithTCPDevice dials a TCP console device at startup.
+func WithTCPDevice(addr string) Option {
+	return func(c *config) { c.tcpAddrs = append(c.tcpAddrs, addr) }
 }
 
 // WithLockTTL sets the resource lease TTL.
@@ -109,19 +122,35 @@ func Bootstrap(opts ...Option) *Runtime {
 		realDevices[con.Path()] = con
 	}
 
+	// Dial any TCP console devices configured.
+	var realTCPs []*transporttcp.Console
+	tcpDevices := map[string]pluginsdk.ConsoleDevice{}
+	for _, addr := range cfg.tcpAddrs {
+		con, err := transporttcp.Dial(addr)
+		if err != nil {
+			continue // a down/unreachable TCP device is non-fatal
+		}
+		realTCPs = append(realTCPs, con)
+		tcpDevices[con.Path()] = con
+	}
+
 	plugins := pluginregistry.New()
 	adbPlugin := adb.New(farm)
 	uartPlugin := uart.NewWithResolver(uartResolver{farm: farm, real: realDevices})
 	mcpPlugin := mcp.New(farm)
+	tcpPlugin := plugintcp.NewWithResolver(tcpResolver{devices: tcpDevices})
 	_ = plugins.Register(adbPlugin)
 	_ = plugins.Register(uartPlugin)
 	_ = plugins.Register(mcpPlugin)
+	_ = plugins.Register(tcpPlugin)
 	_ = plugins.Load(adb.PluginID)
 	_ = plugins.Load(uart.PluginID)
 	_ = plugins.Load(mcp.PluginID)
+	_ = plugins.Load(plugintcp.PluginID)
 	plugins.Ready(adb.PluginID)
 	plugins.Ready(uart.PluginID)
 	plugins.Ready(mcp.PluginID)
+	plugins.Ready(plugintcp.PluginID)
 
 	reg := registry.New()
 	bus := event.New()
@@ -130,6 +159,9 @@ func Bootstrap(opts ...Option) *Runtime {
 	disc.AddScanner(farmScanner{farm: farm})
 	if len(realConsoles) > 0 {
 		disc.AddScanner(realSerialScanner{consoles: realConsoles})
+	}
+	if len(realTCPs) > 0 {
+		disc.AddScanner(realTCPScanner{consoles: realTCPs})
 	}
 
 	res := resolver.New(reg)
@@ -196,7 +228,38 @@ func Bootstrap(opts ...Option) *Runtime {
 		Secrets:       secrets,
 		Artifacts:     artifactSvc,
 		RealConsoles:  realConsoles,
+		RealTCPs:      realTCPs,
 	}
+}
+
+// tcpResolver resolves TCP addresses to console devices.
+type tcpResolver struct {
+	devices map[string]pluginsdk.ConsoleDevice
+}
+
+func (r tcpResolver) ByTCPAddr(addr string) pluginsdk.ConsoleDevice {
+	return r.devices[addr]
+}
+
+// realTCPScanner emits a TCP endpoint per dialed console device.
+type realTCPScanner struct{ consoles []*transporttcp.Console }
+
+func (s realTCPScanner) Scan(_ context.Context) ([]domain.Endpoint, error) {
+	var out []domain.Endpoint
+	for _, con := range s.consoles {
+		ep := domain.Endpoint{
+			ID:        domain.NewEndpointID(),
+			Type:      domain.EndpointTCP,
+			Locator:   con.Path(),
+			Transport: "tcp-ip",
+			Source:    "real-tcp",
+		}
+		for k, v := range con.Identity() {
+			ep.SetAttr(k, v)
+		}
+		out = append(out, ep)
+	}
+	return out, nil
 }
 
 // uartResolver resolves serial locators to fake or real console devices.
