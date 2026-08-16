@@ -146,6 +146,8 @@ message Capability {
   bool idempotent = 6;
   repeated string resource_requirements = 7;
   repeated string supported_channel_types = 8;
+  // Natural-language description for LLM/agent tool selection.
+  string description = 9;
 }
 
 message OperationRequest {

@@ -796,8 +796,10 @@ type Capability struct {
 	Idempotent            bool                   `protobuf:"varint,6,opt,name=idempotent,proto3" json:"idempotent,omitempty"`
 	ResourceRequirements  []string               `protobuf:"bytes,7,rep,name=resource_requirements,json=resourceRequirements,proto3" json:"resource_requirements,omitempty"`
 	SupportedChannelTypes []string               `protobuf:"bytes,8,rep,name=supported_channel_types,json=supportedChannelTypes,proto3" json:"supported_channel_types,omitempty"`
-	unknownFields         protoimpl.UnknownFields
-	sizeCache             protoimpl.SizeCache
+	// Natural-language description for LLM/agent tool selection.
+	Description   string `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Capability) Reset() {
@@ -884,6 +886,13 @@ func (x *Capability) GetSupportedChannelTypes() []string {
 		return x.SupportedChannelTypes
 	}
 	return nil
+}
+
+func (x *Capability) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
 }
 
 type OperationRequest struct {
@@ -1843,7 +1852,7 @@ const file_channel_v1_channel_proto_rawDesc = "" +
 	"\x05state\x18\x06 \x01(\x0e2%.embeddedloop.channel.v1.ChannelStateR\x05state\x12\x18\n" +
 	"\ahealthy\x18\a \x01(\bR\ahealthy\x12\x12\n" +
 	"\x04cost\x18\b \x01(\x03R\x04cost\x12\"\n" +
-	"\fcapabilities\x18\t \x03(\tR\fcapabilities\"\xd2\x02\n" +
+	"\fcapabilities\x18\t \x03(\tR\fcapabilities\"\xf4\x02\n" +
 	"\n" +
 	"Capability\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x18\n" +
@@ -1856,7 +1865,8 @@ const file_channel_v1_channel_proto_rawDesc = "" +
 	"idempotent\x18\x06 \x01(\bR\n" +
 	"idempotent\x123\n" +
 	"\x15resource_requirements\x18\a \x03(\tR\x14resourceRequirements\x126\n" +
-	"\x17supported_channel_types\x18\b \x03(\tR\x15supportedChannelTypes\"\x93\x03\n" +
+	"\x17supported_channel_types\x18\b \x03(\tR\x15supportedChannelTypes\x12 \n" +
+	"\vdescription\x18\t \x01(\tR\vdescription\"\x93\x03\n" +
 	"\x10OperationRequest\x12!\n" +
 	"\foperation_id\x18\x01 \x01(\tR\voperationId\x12\x1e\n" +
 	"\n" +

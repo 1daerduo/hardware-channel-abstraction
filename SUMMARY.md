@@ -93,14 +93,36 @@ Plugin 逻辑一行不改——`plugin/uart` 同时驱动 `fake.Device` 与真�
 
 在对应 Plugin 的 `Capabilities()` 加描述 + `Invoke` 加 case，不改 Loop/统一 API/领域模型。
 
-## 6. 状态与边界
+## 6. 与 LLM / Agent 生态的映射
+
+这套抽象与 AI 生态是**同构**的，而非勉强兼容：
+
+| 本抽象 | LLM / Agent 生态 |
+|---|---|
+| `Capability`（name + version + risk + 描述 + schema） | **Tool**（工具定义） |
+| `Capability.input_schema / output_schema` | **function calling 的参数/返回 JSON Schema** |
+| `Operation`（一次执行，输入→输出，状态机） | **tool call / agent 的 action** |
+| `ConnectivityAPI`（Discover / ListCapabilities / Execute） | **MCP / A2A 的统一调用面** |
+| `Plugin SPI`（接入侧） | **MCP server / connector / tool provider** |
+| `Resolver`（capability→channel 自动选路） | **tool router** |
+| deny-by-default + risk/审批 + 审计 | **AI 安全：最小权限 + human-in-the-loop** |
+| Event / Artifact / Evidence | **可观测性 / artifact / 审计** |
+
+双向契合：`plugin/mcp` 已把 MCP 当作与 ADB/UART 平级的协议接入（向下）；`ListCapabilities + Execute`
+天然就是 LLM 的 tool 发现 + 调用（向上，Loop Runtime 同理是消费方，不碰核心）。
+
+要真正进 AI 生态，只需消费侧薄适配：把每个 `Capability` 翻译成
+`{name, description, input_schema}` 的 tool 定义，把 `Execute` 包装成 tool invoke——
+纯增量，落在「抽象 + 便携拓展」红线内。
+
+## 7. 状态与边界
 
 - **已完成**：除 Loop Runtime（消费方）外，文档 01~18 的设计已基本落地。
 - **MVP 明确不做**（文档 18 §43）：多租户、复杂审批流、全量 Event Replay、动态热升级。
 - **Beta 待做**：真实 ADB/MCP 客户端替换 fake、Artifact Retention、完整 Approval 工作流、真实设备 E2E 全矩阵。
 - **Production**：Plugin 沙箱、审计不可变存储、HA。
 
-## 7. 验证
+## 8. 验证
 
 - `go build ./...`、`go vet ./...`、`go test ./...` 全绿。
 - 78 个 Go 文件、51 个测试，覆盖 Contract / Unit / Architecture / Mutation。

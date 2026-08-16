@@ -28,18 +28,33 @@ const (
 // Capability describes what a device can do (the semantics). A Channel is the
 // implementation path; the Resolver matches the two.
 //
+// Description + InputSchema/OutputSchema make a capability self-describing to
+// LLM/agent tool selection: {name, description, input_schema} is exactly a
+// function-calling tool definition.
+//
 // ResourceRequirements are resource *types* (e.g. "flash", "device",
 // "console"); the Resource Registry maps a type to the concrete Resource
 // instance of the target device at execution time.
 type Capability struct {
 	Name                  CapabilityName
 	Version               string
-	InputSchema           string
-	OutputSchema          string
+	Description           string
+	InputSchema           JSONSchema
+	OutputSchema          JSONSchema
 	RiskLevel             RiskLevel
 	Idempotent            bool
 	ResourceRequirements  []string
 	SupportedChannelTypes []string
+}
+
+// ToolDefinition returns the LLM-facing tool view of this capability:
+// {name, description, input_schema}. It is the bridge to function-calling.
+func (c *Capability) ToolDefinition() map[string]any {
+	return map[string]any{
+		"name":         string(c.Name),
+		"description":  c.Description,
+		"input_schema": c.InputSchema,
+	}
 }
 
 // RequireResource records a resource type this capability needs (e.g. the

@@ -9,14 +9,27 @@ import (
 // served by multiple protocol channels.
 var mcpCapabilities = []domain.Capability{
 	{
-		Name:       domain.CapabilityInfoGet,
-		Version:    "1.0",
+		Name:        domain.CapabilityInfoGet,
+		Version:     "1.0",
+		Description: "读取设备信息（序列号、型号、固件版本、启动状态）",
+		InputSchema: domain.ObjectSchema(nil, nil),
+		OutputSchema: domain.ObjectSchema(nil, map[string]domain.JSONSchema{
+			"serial":   domain.StringSchema("设备序列号"),
+			"model":    domain.StringSchema("设备型号"),
+			"firmware": domain.StringSchema("固件版本"),
+			"state":    domain.StringSchema("启动状态"),
+		}),
 		RiskLevel:  domain.RiskLow,
 		Idempotent: true,
 	},
 	{
-		Name:                 domain.CapabilityReboot,
-		Version:              "1.0",
+		Name:        domain.CapabilityReboot,
+		Version:     "1.0",
+		Description: "重启设备",
+		InputSchema: domain.ObjectSchema(nil, nil),
+		OutputSchema: domain.ObjectSchema(nil, map[string]domain.JSONSchema{
+			"state": domain.StringSchema("重启后的启动状态"),
+		}),
 		RiskLevel:            domain.RiskMedium,
 		Idempotent:           false,
 		ResourceRequirements: []string{domain.ResourceTypeDevice},

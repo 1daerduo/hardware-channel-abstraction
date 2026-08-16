@@ -282,8 +282,9 @@ func CapabilityToProto(c *domain.Capability) *channelv1.Capability {
 	p := &channelv1.Capability{
 		Name:                  string(c.Name),
 		Version:               c.Version,
-		InputSchema:           c.InputSchema,
-		OutputSchema:          c.OutputSchema,
+		Description:           c.Description,
+		InputSchema:           c.InputSchema.JSON(),
+		OutputSchema:          c.OutputSchema.JSON(),
 		RiskLevel:             riskLevelToProto[c.RiskLevel],
 		Idempotent:            c.Idempotent,
 		SupportedChannelTypes: c.SupportedChannelTypes,
@@ -299,8 +300,9 @@ func CapabilityFromProto(p *channelv1.Capability) *domain.Capability {
 	c := &domain.Capability{
 		Name:                  domain.CapabilityName(p.Name),
 		Version:               p.Version,
-		InputSchema:           p.InputSchema,
-		OutputSchema:          p.OutputSchema,
+		Description:           p.Description,
+		InputSchema:           domain.ParseSchema(p.InputSchema),
+		OutputSchema:          domain.ParseSchema(p.OutputSchema),
 		RiskLevel:             riskLevelFromProto[p.RiskLevel],
 		Idempotent:            p.Idempotent,
 		SupportedChannelTypes: p.SupportedChannelTypes,
