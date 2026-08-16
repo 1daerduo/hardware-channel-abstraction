@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/fake"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/fake"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // Invoke maps a unified operation to an MCP tool call. The tool name is

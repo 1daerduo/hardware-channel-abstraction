@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"time"
 
-	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
-	"example.com/embedded-loop-channel/domain"
+	channelv1 "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // ---------------------------------------------------------------------------

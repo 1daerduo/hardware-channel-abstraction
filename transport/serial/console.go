@@ -6,7 +6,7 @@ package serial
 import (
 	"time"
 
-	"example.com/embedded-loop-channel/transport/console"
+	"github.com/1daerduo/hardware-channel-abstraction/transport/console"
 	serialpkg "github.com/tarm/serial"
 )
 

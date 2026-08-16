@@ -6,7 +6,7 @@ package tcp
 import (
 	"net"
 
-	"example.com/embedded-loop-channel/transport/console"
+	"github.com/1daerduo/hardware-channel-abstraction/transport/console"
 )
 
 // Console is the byte-stream console over a TCP connection.

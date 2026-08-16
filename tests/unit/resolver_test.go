@@ -3,9 +3,9 @@ package unit
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/core/registry"
-	"example.com/embedded-loop-channel/core/resolver"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/core/resolver"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 func channelFor(reg *registry.Registry, deviceID domain.DeviceID, pluginID, ctype string, healthy bool, cost int64, caps ...domain.CapabilityName) *domain.Channel {

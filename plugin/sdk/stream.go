@@ -3,7 +3,7 @@ package sdk
 import (
 	"context"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // StreamChunk is one piece of streamed data. Sequence is monotonic within a

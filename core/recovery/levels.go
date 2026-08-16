@@ -3,7 +3,7 @@ package recovery
 import (
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Level is the recovery ladder (Design doc 09 §6). Levels escalate: a lower

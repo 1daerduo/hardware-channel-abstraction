@@ -3,8 +3,8 @@ package unit
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/core/artifact"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/artifact"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 func TestArtifactLifecycle(t *testing.T) {

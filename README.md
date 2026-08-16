@@ -135,8 +135,8 @@ go run ./cmd/elc --grpc <addr> devices                      # 远程后端
 
 ```bash
 protoc -I api/proto \
-  --go_out=. --go_opt=module=example.com/embedded-loop-channel \
-  --go-grpc_out=. --go-grpc_opt=module=example.com/embedded-loop-channel \
+  --go_out=. --go_opt=module=github.com/1daerduo/hardware-channel-abstraction \
+  --go-grpc_out=. --go-grpc_opt=module=github.com/1daerduo/hardware-channel-abstraction \
   api/proto/channel/v1/channel.proto api/proto/channel/v1/service.proto
 ```
 

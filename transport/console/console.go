@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // Prompt is the shell prompt used to delimit command responses.

@@ -1,7 +1,7 @@
 package sdk
 
 import (
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Error builds a normalized domain.Error. Plugins must use this rather than

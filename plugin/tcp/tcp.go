@@ -8,8 +8,8 @@ import (
 	"context"
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // PluginID is the stable, globally-unique plugin identity.

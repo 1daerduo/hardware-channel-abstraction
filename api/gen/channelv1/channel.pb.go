@@ -2039,7 +2039,7 @@ const file_channel_v1_channel_proto_rawDesc = "" +
 	"\bLockMode\x12\x19\n" +
 	"\x15LOCK_MODE_UNSPECIFIED\x10\x00\x12\x14\n" +
 	"\x10LOCK_MODE_SHARED\x10\x01\x12\x17\n" +
-	"\x13LOCK_MODE_EXCLUSIVE\x10\x02B?Z=example.com/embedded-loop-channel/api/gen/channelv1;channelv1b\x06proto3"
+	"\x13LOCK_MODE_EXCLUSIVE\x10\x02BNZLgithub.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1;channelv1b\x06proto3"
 
 var (
 	file_channel_v1_channel_proto_rawDescOnce sync.Once

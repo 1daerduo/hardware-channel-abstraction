@@ -5,7 +5,7 @@ import (
 	"context"
 	"sync"
 
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // consoleStream is a line-buffered, sequenced stream over a Console's reader

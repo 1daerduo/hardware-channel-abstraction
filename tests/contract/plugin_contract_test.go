@@ -7,12 +7,12 @@ import (
 	"errors"
 	"testing"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/fake"
-	"example.com/embedded-loop-channel/plugin/adb"
-	"example.com/embedded-loop-channel/plugin/mcp"
-	"example.com/embedded-loop-channel/plugin/sdk"
-	"example.com/embedded-loop-channel/plugin/uart"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/fake"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/adb"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/mcp"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/uart"
 )
 
 // asDomainErr asserts err is a normalized *domain.Error and returns it.

@@ -1,7 +1,7 @@
 package mcp
 
 import (
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // mcpCapabilities maps MCP tools to unified capabilities. device.info.get and

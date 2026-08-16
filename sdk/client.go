@@ -8,17 +8,17 @@ import (
 	"context"
 	"time"
 
-	"example.com/embedded-loop-channel/core/artifact"
-	"example.com/embedded-loop-channel/core/discovery"
-	"example.com/embedded-loop-channel/core/event"
-	"example.com/embedded-loop-channel/core/operation"
-	"example.com/embedded-loop-channel/core/registry"
-	"example.com/embedded-loop-channel/core/resolver"
-	"example.com/embedded-loop-channel/core/security"
-	"example.com/embedded-loop-channel/core/session"
-	"example.com/embedded-loop-channel/domain"
-	pluginregistry "example.com/embedded-loop-channel/plugin/registry"
-	pluginsdk "example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/core/artifact"
+	"github.com/1daerduo/hardware-channel-abstraction/core/discovery"
+	"github.com/1daerduo/hardware-channel-abstraction/core/event"
+	"github.com/1daerduo/hardware-channel-abstraction/core/operation"
+	"github.com/1daerduo/hardware-channel-abstraction/core/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/core/resolver"
+	"github.com/1daerduo/hardware-channel-abstraction/core/security"
+	"github.com/1daerduo/hardware-channel-abstraction/core/session"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	pluginregistry "github.com/1daerduo/hardware-channel-abstraction/plugin/registry"
+	pluginsdk "github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // Client is the Unified API entry point.

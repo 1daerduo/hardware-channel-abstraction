@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Manager centralizes lock decisions (Design doc 07 §8). It supports SHARED

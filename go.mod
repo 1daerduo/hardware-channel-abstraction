@@ -1,4 +1,4 @@
-module example.com/embedded-loop-channel
+module github.com/1daerduo/hardware-channel-abstraction
 
 go 1.26
 

@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"example.com/embedded-loop-channel/core/security"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/fake"
-	"example.com/embedded-loop-channel/runtime"
+	"github.com/1daerduo/hardware-channel-abstraction/core/security"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/fake"
+	"github.com/1daerduo/hardware-channel-abstraction/runtime"
 )
 
 func TestAuthenticator(t *testing.T) {

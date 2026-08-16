@@ -3,9 +3,9 @@ package unit
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/core/recovery"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/core/recovery"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 func opFor(cap domain.CapabilityName, params map[string]string) *domain.Operation {

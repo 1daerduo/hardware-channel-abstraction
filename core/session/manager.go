@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Manager is a thread-safe Session store.

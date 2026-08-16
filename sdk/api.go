@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // ConnectivityAPI is the stable Unified API contract (Design doc 03). It is

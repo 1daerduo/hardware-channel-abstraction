@@ -6,7 +6,7 @@ syntax = "proto3";
 
 package embeddedloop.channel.v1;
 
-option go_package = "example.com/embedded-loop-channel/api/gen/channelv1;channelv1";
+option go_package = "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1;channelv1";
 
 import "channel/v1/channel.proto";
 

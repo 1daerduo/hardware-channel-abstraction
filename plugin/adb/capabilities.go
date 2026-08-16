@@ -1,7 +1,7 @@
 package adb
 
 import (
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // adbCapabilities is the plugin's static capability set (declared in the

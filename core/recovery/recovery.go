@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/core/discovery"
-	"example.com/embedded-loop-channel/core/event"
-	"example.com/embedded-loop-channel/core/resolver"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/plugin/registry"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/core/discovery"
+	"github.com/1daerduo/hardware-channel-abstraction/core/event"
+	"github.com/1daerduo/hardware-channel-abstraction/core/resolver"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // Classifier maps arbitrary errors to the unified taxonomy. Already-normalized

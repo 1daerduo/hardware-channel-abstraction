@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"example.com/embedded-loop-channel/core/resource"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/resource"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 func TestLockExclusiveConflict(t *testing.T) {

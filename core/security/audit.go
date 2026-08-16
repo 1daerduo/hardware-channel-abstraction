@@ -1,8 +1,8 @@
 package security
 
 import (
-	"example.com/embedded-loop-channel/core/event"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/event"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // AuditService appends tamper-evident-ish audit facts to the EventBus. Audit

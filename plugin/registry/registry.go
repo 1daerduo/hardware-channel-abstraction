@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // State is the plugin lifecycle managed by Core.

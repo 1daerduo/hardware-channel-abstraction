@@ -1402,7 +1402,7 @@ const file_channel_v1_service_proto_rawDesc = "" +
 	"\tListTasks\x12).embeddedloop.channel.v1.ListTasksRequest\x1a*.embeddedloop.channel.v1.ListTasksResponse\x12e\n" +
 	"\n" +
 	"CancelTask\x12*.embeddedloop.channel.v1.CancelTaskRequest\x1a+.embeddedloop.channel.v1.CancelTaskResponse\x12_\n" +
-	"\bListPool\x12(.embeddedloop.channel.v1.ListPoolRequest\x1a).embeddedloop.channel.v1.ListPoolResponseB?Z=example.com/embedded-loop-channel/api/gen/channelv1;channelv1b\x06proto3"
+	"\bListPool\x12(.embeddedloop.channel.v1.ListPoolRequest\x1a).embeddedloop.channel.v1.ListPoolResponseBNZLgithub.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1;channelv1b\x06proto3"
 
 var (
 	file_channel_v1_service_proto_rawDescOnce sync.Once

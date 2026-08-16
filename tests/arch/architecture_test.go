@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-const module = "example.com/embedded-loop-channel"
+const module = "github.com/1daerduo/hardware-channel-abstraction"
 
 type pkg struct {
 	ImportPath string

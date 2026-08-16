@@ -58,7 +58,7 @@ elc pool   --grpc localhost:8080
 ## 4. 库模式（Go 代码嵌入）
 
 ```go
-import "example.com/embedded-loop-channel/sdk"
+import "github.com/1daerduo/hardware-channel-abstraction/sdk"
 
 // api 是 sdk.ConnectivityAPI：进程内 Client 或远程 grpc.Client 都实现它。
 var api sdk.ConnectivityAPI

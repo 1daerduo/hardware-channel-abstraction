@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"example.com/embedded-loop-channel/api/convert"
-	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/api/convert"
+	channelv1 "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/sdk"
 
 	"google.golang.org/grpc"
 )

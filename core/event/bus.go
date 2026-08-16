@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Filter selects events for a subscription. Zero-valued fields match all.

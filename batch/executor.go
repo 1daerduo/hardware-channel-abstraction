@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/sdk"
 )
 
 // Request is one batch operation: a capability + parameters applied to a set

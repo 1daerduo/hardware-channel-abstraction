@@ -3,7 +3,7 @@ package sdk
 import (
 	"context"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Plugin is the SPI every protocol implementation must satisfy. A Plugin is a

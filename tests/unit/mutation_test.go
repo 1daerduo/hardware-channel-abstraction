@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"example.com/embedded-loop-channel/core/resource"
-	"example.com/embedded-loop-channel/core/security"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/resource"
+	"github.com/1daerduo/hardware-channel-abstraction/core/security"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Mutation tests (Design doc 17 §14) actively attack the invariants and assert

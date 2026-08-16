@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/batch"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/batch"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/sdk"
 )
 
 // TaskState is the lifecycle of a queued task.

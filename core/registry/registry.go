@@ -7,7 +7,7 @@ import (
 	"sort"
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Registry is a thread-safe store of devices, endpoints and channels.

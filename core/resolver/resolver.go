@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"example.com/embedded-loop-channel/core/registry"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/core/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Resolver chooses channels from the Registry.

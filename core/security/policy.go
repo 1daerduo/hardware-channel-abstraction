@@ -7,7 +7,7 @@ package security
 import (
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Decision is the outcome of a policy evaluation.

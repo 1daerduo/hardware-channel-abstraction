@@ -13,9 +13,9 @@ import (
 	"fmt"
 	"time"
 
-	"example.com/embedded-loop-channel/core/event"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/runtime"
+	"github.com/1daerduo/hardware-channel-abstraction/core/event"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/runtime"
 )
 
 func main() {

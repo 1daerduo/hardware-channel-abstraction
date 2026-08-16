@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/fake"
-	"example.com/embedded-loop-channel/runtime"
-	"example.com/embedded-loop-channel/sdk"
-	grpctransport "example.com/embedded-loop-channel/transport/grpc"
+	channelv1 "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/fake"
+	"github.com/1daerduo/hardware-channel-abstraction/runtime"
+	"github.com/1daerduo/hardware-channel-abstraction/sdk"
+	grpctransport "github.com/1daerduo/hardware-channel-abstraction/transport/grpc"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

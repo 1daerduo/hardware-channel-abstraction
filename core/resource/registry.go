@@ -6,7 +6,7 @@ package resource
 import (
 	"sync"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Registry maps (device, type) to a concrete Resource instance. It is

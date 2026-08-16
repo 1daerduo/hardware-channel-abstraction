@@ -3,9 +3,9 @@ package unit
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/api/convert"
-	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/api/convert"
+	channelv1 "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 	"google.golang.org/protobuf/proto"
 )
 

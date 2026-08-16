@@ -3,9 +3,9 @@ package grpc
 import (
 	"context"
 
-	"example.com/embedded-loop-channel/api/convert"
-	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
-	"example.com/embedded-loop-channel/batch"
+	"github.com/1daerduo/hardware-channel-abstraction/api/convert"
+	channelv1 "github.com/1daerduo/hardware-channel-abstraction/api/gen/channelv1"
+	"github.com/1daerduo/hardware-channel-abstraction/batch"
 
 	"google.golang.org/grpc"
 )

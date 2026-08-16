@@ -1,7 +1,7 @@
 package uart
 
 import (
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // uartCapabilities is the plugin's static capability set. device.log is

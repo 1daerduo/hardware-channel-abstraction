@@ -1,8 +1,8 @@
 package recovery
 
 import (
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/plugin/sdk"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 )
 
 // ReconciliationResult decides what to do with an interrupted operation after

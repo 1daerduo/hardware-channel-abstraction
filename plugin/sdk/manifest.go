@@ -6,7 +6,7 @@ package sdk
 import (
 	"fmt"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // TrustLevel participates in Policy decisions but never replaces Capability

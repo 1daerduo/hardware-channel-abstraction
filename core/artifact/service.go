@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 // Service is an in-memory Artifact metadata + object store.

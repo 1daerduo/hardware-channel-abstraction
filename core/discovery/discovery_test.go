@@ -3,10 +3,10 @@ package discovery
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/core/event"
-	"example.com/embedded-loop-channel/core/registry"
-	"example.com/embedded-loop-channel/domain"
-	pluginregistry "example.com/embedded-loop-channel/plugin/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/core/event"
+	"github.com/1daerduo/hardware-channel-abstraction/core/registry"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	pluginregistry "github.com/1daerduo/hardware-channel-abstraction/plugin/registry"
 )
 
 // TestCorrelateIdentityConflictQuarantines verifies a strong identity conflict

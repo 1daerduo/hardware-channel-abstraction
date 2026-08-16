@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"example.com/embedded-loop-channel/domain"
-	"example.com/embedded-loop-channel/fake"
-	"example.com/embedded-loop-channel/runtime"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/fake"
+	"github.com/1daerduo/hardware-channel-abstraction/runtime"
 )
 
 // TestAsyncOperation verifies the long-operation path: Start returns an

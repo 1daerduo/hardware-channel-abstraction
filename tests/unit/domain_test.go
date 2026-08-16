@@ -3,7 +3,7 @@ package unit
 import (
 	"testing"
 
-	"example.com/embedded-loop-channel/domain"
+	"github.com/1daerduo/hardware-channel-abstraction/domain"
 )
 
 func TestOperationStateMachineTerminalIsFinal(t *testing.T) {
