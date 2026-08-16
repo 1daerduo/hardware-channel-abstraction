@@ -26,6 +26,7 @@ import (
 	"example.com/embedded-loop-channel/batch"
 	"example.com/embedded-loop-channel/domain"
 	"example.com/embedded-loop-channel/fake"
+	"example.com/embedded-loop-channel/farm"
 	"example.com/embedded-loop-channel/runtime"
 	"example.com/embedded-loop-channel/sdk"
 	grpctransport "example.com/embedded-loop-channel/transport/grpc"
@@ -52,6 +53,8 @@ func main() {
 		runExec(os.Args[2:])
 	case "batch":
 		runBatch(os.Args[2:])
+	case "queue":
+		runQueue(os.Args[2:])
 	case "stream":
 		runStream(os.Args[2:])
 	case "help", "-h", "--help":
@@ -72,6 +75,7 @@ func usage() {
   elc caps <device> [--json]                              列出能力（含描述+schema）
   elc exec <device> <capability> [k=v ...] [--json]       执行能力
   elc batch <capability> [k=v ...] [--devices a,b] [--concurrency N] [--json]   批量执行
+  elc queue <capability> [k=v ...] [--priority N]         任务队列（提交+等待+设备池）
   elc stream <device> <capability>                        流式控制台（进程内）
 
 后端 flags:
@@ -469,6 +473,77 @@ func runBatch(args []string) {
 			}
 		}
 		fmt.Printf("  %-12s %s\n", r.Device.Serial, status)
+	}
+}
+
+func runQueue(args []string) {
+	fs := flag.NewFlagSet("queue", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	priority := fs.Int("priority", 0, "任务优先级（越高越先）")
+	_ = fs.Parse(reorderArgs(args))
+	if fs.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "用法: elc queue <capability> [k=v ...] [--priority N]")
+		os.Exit(2)
+	}
+	if b.grpcAddr != "" {
+		fmt.Fprintln(os.Stderr, "queue 当前仅支持进程内（队列常驻在 serve 进程，gRPC 队列 RPC 待实现）")
+		os.Exit(1)
+	}
+
+	rt, err := b.bootstrap()
+	if err != nil {
+		fatalf("启动失败: %v", err)
+	}
+	defer rt.Close()
+
+	params := map[string]string{}
+	for _, a := range fs.Args()[1:] {
+		if i := strings.Index(a, "="); i >= 0 {
+			params[a[:i]] = a[i+1:]
+		}
+	}
+
+	s := farm.New(rt.Client, 1)
+	s.Start()
+	defer s.Stop()
+
+	id, err := s.Submit(batch.Request{
+		Capability: domain.CapabilityName(fs.Arg(0)),
+		Parameters: params,
+		Principal:  principal,
+	}, *priority)
+	if err != nil {
+		fatalf("提交失败: %v", err)
+	}
+	fmt.Printf("已提交任务 %s\n", id)
+
+	for {
+		task, _ := s.Status(id)
+		if task.State == farm.TaskSucceeded || task.State == farm.TaskFailed || task.State == farm.TaskCancelled {
+			fmt.Printf("任务 %s: %s\n", id, task.State)
+			if task.Summary != nil {
+				fmt.Printf("  total=%d succeeded=%d failed=%d\n", task.Summary.Total, task.Summary.Succeeded, task.Summary.Failed)
+			}
+			if task.Err != "" {
+				fmt.Printf("  error: %s\n", task.Err)
+			}
+			break
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+
+	fmt.Println("设备池状态:")
+	for _, e := range s.PoolSnapshot() {
+		busy := "idle"
+		if e.Busy {
+			busy = "busy"
+		}
+		last := string(e.LastState)
+		if last == "" {
+			last = "-"
+		}
+		fmt.Printf("  %-12s %-4s last=%s\n", e.Device.Serial, busy, last)
 	}
 }
 
