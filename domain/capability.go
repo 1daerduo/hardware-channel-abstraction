@@ -23,6 +23,17 @@ const (
 	CapabilityLog      CapabilityName = "device.log"
 	CapabilityConsole  CapabilityName = "device.console"
 	CapabilityReset    CapabilityName = "device.reset"
+
+	// Debug (JTAG/SWD) control-plane capabilities.
+	CapabilityDebugHalt        CapabilityName = "debug.halt"
+	CapabilityDebugResume      CapabilityName = "debug.resume"
+	CapabilityDebugReadMemory  CapabilityName = "debug.read_memory"
+	CapabilityDebugWriteMemory CapabilityName = "debug.write_memory"
+
+	// Modbus (industrial register protocol) capabilities.
+	CapabilityModbusReadHolding CapabilityName = "modbus.read_holding_registers"
+	CapabilityModbusReadInput   CapabilityName = "modbus.read_input_registers"
+	CapabilityModbusWriteReg    CapabilityName = "modbus.write_register"
 )
 
 // Capability describes what a device can do (the semantics). A Channel is the

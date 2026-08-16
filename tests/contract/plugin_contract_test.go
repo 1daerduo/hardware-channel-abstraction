@@ -10,6 +10,7 @@ import (
 	"github.com/1daerduo/hardware-channel-abstraction/domain"
 	"github.com/1daerduo/hardware-channel-abstraction/fake"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/adb"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/jtag"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/mcp"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/uart"
@@ -31,6 +32,10 @@ type Case struct {
 	Locator          string
 	ChannelType      string
 	SampleCapability domain.CapabilityName
+	// ForeignEndpointType is the endpoint type a plugin must reject. Defaults
+	// to EndpointJTAG (fine for most plugins; the JTAG plugin itself uses a
+	// different foreign type).
+	ForeignEndpointType domain.EndpointType
 }
 
 // AssertPluginContract runs the plugin SPI contract against p backed by farm.
@@ -55,7 +60,11 @@ func AssertPluginContract(t *testing.T, p sdk.Plugin, farm *fake.Farm, c Case) {
 	if res, _ := p.Probe(ctx, unknown); res.Match {
 		t.Fatalf("probe should reject unknown locator")
 	}
-	wrongType := domain.Endpoint{ID: domain.NewEndpointID(), Type: domain.EndpointJTAG, Locator: c.Locator}
+	foreign := c.ForeignEndpointType
+	if foreign == "" {
+		foreign = domain.EndpointJTAG
+	}
+	wrongType := domain.Endpoint{ID: domain.NewEndpointID(), Type: foreign, Locator: c.Locator}
 	if res, _ := p.Probe(ctx, wrongType); res.Match {
 		t.Fatalf("probe should reject a foreign endpoint type")
 	}
@@ -167,5 +176,18 @@ func TestMCPPluginContract(t *testing.T) {
 		Locator:          "mcp://ABC123:8080",
 		ChannelType:      "mcp",
 		SampleCapability: domain.CapabilityInfoGet,
+	})
+}
+
+func TestJTAGPluginContract(t *testing.T) {
+	farm := fake.NewFarm()
+	farm.Add(fake.NewDevice("ABC123", "eval-board", "1.2.3", "usb:1-1.2").
+		WithJTAGLocator("debug:1-1.2"))
+	AssertPluginContract(t, jtag.NewWithResolver(farm), farm, Case{
+		EndpointType:        domain.EndpointJTAG,
+		Locator:             "debug:1-1.2",
+		ChannelType:         "jtag",
+		SampleCapability:    domain.CapabilityDebugHalt,
+		ForeignEndpointType: domain.EndpointUART,
 	})
 }

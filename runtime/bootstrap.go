@@ -21,7 +21,9 @@ import (
 	"github.com/1daerduo/hardware-channel-abstraction/domain"
 	"github.com/1daerduo/hardware-channel-abstraction/fake"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/adb"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/jtag"
 	"github.com/1daerduo/hardware-channel-abstraction/plugin/mcp"
+	"github.com/1daerduo/hardware-channel-abstraction/plugin/modbus"
 	pluginregistry "github.com/1daerduo/hardware-channel-abstraction/plugin/registry"
 	pluginsdk "github.com/1daerduo/hardware-channel-abstraction/plugin/sdk"
 	plugintcp "github.com/1daerduo/hardware-channel-abstraction/plugin/tcp"
@@ -64,11 +66,12 @@ func (rt *Runtime) Close() {
 type Option func(*config)
 
 type config struct {
-	devices    []*fake.Device
-	realSerial []serialConfig
-	tcpAddrs   []string
-	lockTTL    time.Duration
-	maxRetries int
+	devices     []*fake.Device
+	realSerial  []serialConfig
+	tcpAddrs    []string
+	modbusAddrs []string
+	lockTTL     time.Duration
+	maxRetries  int
 }
 
 type serialConfig struct {
@@ -90,6 +93,11 @@ func WithRealSerial(path string, baud int) Option {
 // WithTCPDevice dials a TCP console device at startup.
 func WithTCPDevice(addr string) Option {
 	return func(c *config) { c.tcpAddrs = append(c.tcpAddrs, addr) }
+}
+
+// WithModbusDevice registers a Modbus TCP device address at startup.
+func WithModbusDevice(addr string) Option {
+	return func(c *config) { c.modbusAddrs = append(c.modbusAddrs, addr) }
 }
 
 // WithLockTTL sets the resource lease TTL.
@@ -139,18 +147,26 @@ func Bootstrap(opts ...Option) *Runtime {
 	uartPlugin := uart.NewWithResolver(uartResolver{farm: farm, real: realDevices})
 	mcpPlugin := mcp.New(farm)
 	tcpPlugin := plugintcp.NewWithResolver(tcpResolver{devices: tcpDevices})
+	jtagPlugin := jtag.NewWithResolver(jtagResolver{farm: farm})
+	modbusPlugin := modbus.New()
 	_ = plugins.Register(adbPlugin)
 	_ = plugins.Register(uartPlugin)
 	_ = plugins.Register(mcpPlugin)
 	_ = plugins.Register(tcpPlugin)
+	_ = plugins.Register(jtagPlugin)
+	_ = plugins.Register(modbusPlugin)
 	_ = plugins.Load(adb.PluginID)
 	_ = plugins.Load(uart.PluginID)
 	_ = plugins.Load(mcp.PluginID)
 	_ = plugins.Load(plugintcp.PluginID)
+	_ = plugins.Load(jtag.PluginID)
+	_ = plugins.Load(modbus.PluginID)
 	plugins.Ready(adb.PluginID)
 	plugins.Ready(uart.PluginID)
 	plugins.Ready(mcp.PluginID)
 	plugins.Ready(plugintcp.PluginID)
+	plugins.Ready(jtag.PluginID)
+	plugins.Ready(modbus.PluginID)
 
 	reg := registry.New()
 	bus := event.New()
@@ -162,6 +178,9 @@ func Bootstrap(opts ...Option) *Runtime {
 	}
 	if len(realTCPs) > 0 {
 		disc.AddScanner(realTCPScanner{consoles: realTCPs})
+	}
+	if len(cfg.modbusAddrs) > 0 {
+		disc.AddScanner(modbusScanner{addrs: cfg.modbusAddrs})
 	}
 
 	res := resolver.New(reg)
@@ -351,6 +370,44 @@ func (s farmScanner) Scan(_ context.Context) ([]domain.Endpoint, error) {
 			}
 			out = append(out, ep)
 		}
+		// JTAG/SWD debug endpoint (if configured).
+		if d.JTAGLocator != "" {
+			ep := domain.Endpoint{
+				ID:        domain.NewEndpointID(),
+				Type:      domain.EndpointJTAG,
+				Locator:   d.JTAGLocator,
+				Transport: "debug-probe",
+				Source:    "fake-farm",
+			}
+			for k, v := range d.Identity() {
+				ep.SetAttr(k, v)
+			}
+			out = append(out, ep)
+		}
+	}
+	return out, nil
+}
+
+// jtagResolver resolves JTAG locators to fake debug targets.
+type jtagResolver struct{ farm *fake.Farm }
+
+func (r jtagResolver) ByJTAGLocator(locator string) *fake.Device {
+	return r.farm.ByJTAGLocator(locator)
+}
+
+// modbusScanner emits a Modbus endpoint per configured address.
+type modbusScanner struct{ addrs []string }
+
+func (s modbusScanner) Scan(_ context.Context) ([]domain.Endpoint, error) {
+	var out []domain.Endpoint
+	for _, addr := range s.addrs {
+		out = append(out, domain.Endpoint{
+			ID:        domain.NewEndpointID(),
+			Type:      domain.EndpointModbus,
+			Locator:   addr,
+			Transport: "tcp-ip",
+			Source:    "modbus",
+		})
 	}
 	return out, nil
 }

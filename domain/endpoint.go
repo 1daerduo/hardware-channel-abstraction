@@ -11,6 +11,7 @@ const (
 	EndpointJTAG        EndpointType = "jtag"
 	EndpointTCP         EndpointType = "tcp"
 	EndpointMCP         EndpointType = "mcp"
+	EndpointModbus      EndpointType = "modbus-tcp"
 )
 
 // Endpoint answers "where is it reachable". It is the discoverable entry

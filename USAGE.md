@@ -99,6 +99,8 @@ res, err := api.Execute(ctx, domain.OperationRequest{
 | 串口（CH340/FTDI…） | `--serial /dev/ttyUSB0 --baud 115200`（UART 插件） |
 | TCP 直连 | `--tcp <addr>`（TCP 插件，字节流控制台） |
 | 远程服务/网络 | `--grpc <addr>`（连已有中央服务） |
+| JTAG/SWD 调试器 | `plugin/jtag`（debug 控制面：halt/resume/read/write memory），端点自动发现 |
+| Modbus TCP 设备 | `plugin/modbus`（read_holding/read_input/write_reg 寄存器），端点自动发现 |
 | ADB / MCP / 未来协议 | 已有插件自动发现；新协议见 skill |
 | 模拟（无硬件） | 无 flags，内置 `fake-001` 演示 |
 

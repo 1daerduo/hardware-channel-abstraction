@@ -22,14 +22,15 @@ var (
 // and (optionally) a UART serial port. Both endpoints share the same serial
 // identity, so Discovery can correlate them to one Device.
 type Device struct {
-	mu         sync.RWMutex
-	Serial     string
-	HardwareID string // strong hardware-unique identity (defaults to serial)
-	Model      string
-	Firmware   string
-	Locator    string // USB-ADB endpoint locator
-	SerialPort string // UART endpoint locator (e.g. ttyUSB0), empty if none
-	MCPURL     string // MCP remote-service endpoint locator, empty if none
+	mu          sync.RWMutex
+	Serial      string
+	HardwareID  string // strong hardware-unique identity (defaults to serial)
+	Model       string
+	Firmware    string
+	Locator     string // USB-ADB endpoint locator
+	SerialPort  string // UART endpoint locator (e.g. ttyUSB0), empty if none
+	MCPURL      string // MCP remote-service endpoint locator, empty if none
+	JTAGLocator string // JTAG/SWD debug-probe locator, empty if none
 
 	online    bool
 	BootState string
@@ -38,6 +39,9 @@ type Device struct {
 	files      map[string]string
 	logs       []string
 	console    []string
+
+	debugHalted bool
+	memory      map[uint32]uint32 // word-addressable debug memory
 
 	failNextInvoke bool
 	latency        time.Duration
@@ -56,6 +60,7 @@ func NewDevice(serial, model, firmware, locator string) *Device {
 		files:      map[string]string{},
 		logs:       []string{},
 		console:    []string{"boot: ok", "init: started"},
+		memory:     map[uint32]uint32{0x20000000: 0xdeadbeef},
 	}
 }
 
@@ -70,6 +75,13 @@ func (d *Device) WithSerialPort(path string) *Device {
 // device for chaining.
 func (d *Device) WithMCPURL(url string) *Device {
 	d.MCPURL = url
+	return d
+}
+
+// WithJTAGLocator sets the JTAG/SWD debug-probe locator and returns the device
+// for chaining.
+func (d *Device) WithJTAGLocator(path string) *Device {
+	d.JTAGLocator = path
 	return d
 }
 
@@ -229,6 +241,68 @@ func (d *Device) PowerCycle() error {
 	return nil
 }
 
+// ---------------------------------------------------------------------------
+// JTAG/SWD debug control plane
+// ---------------------------------------------------------------------------
+
+// Halt halts the core (debug.halt). It requires the core to be running.
+func (d *Device) Halt() error {
+	if err := d.guard(); err != nil {
+		return err
+	}
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.debugHalted = true
+	d.console = append(d.console, "debug: halted")
+	return nil
+}
+
+// Resume resumes the core (debug.resume).
+func (d *Device) Resume() error {
+	if err := d.guard(); err != nil {
+		return err
+	}
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.debugHalted = false
+	d.console = append(d.console, "debug: running")
+	return nil
+}
+
+// IsHalted reports whether the core is halted.
+func (d *Device) IsHalted() bool {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	return d.debugHalted
+}
+
+// ReadMemory reads words from word-addressable memory (debug.read_memory).
+func (d *Device) ReadMemory(addr uint32, count int) ([]uint32, error) {
+	if err := d.guard(); err != nil {
+		return nil, err
+	}
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	out := make([]uint32, 0, count)
+	for i := 0; i < count; i++ {
+		out = append(out, d.memory[addr+uint32(i)*4])
+	}
+	return out, nil
+}
+
+// WriteMemory writes words to memory (debug.write_memory).
+func (d *Device) WriteMemory(addr uint32, values []uint32) error {
+	if err := d.guard(); err != nil {
+		return err
+	}
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	for i, v := range values {
+		d.memory[addr+uint32(i)*4] = v
+	}
+	return nil
+}
+
 // Execute runs a command against a small allowlist (device.execute).
 func (d *Device) Execute(cmd string) (string, error) {
 	if err := d.guard(); err != nil {
@@ -315,7 +389,7 @@ func (f *Farm) ByLocator(locator string) *Device {
 	f.mu.RLock()
 	defer f.mu.RUnlock()
 	for _, d := range f.devices {
-		if d.Locator == locator || d.SerialPort == locator || d.MCPURL == locator {
+		if d.Locator == locator || d.SerialPort == locator || d.MCPURL == locator || d.JTAGLocator == locator {
 			return d
 		}
 	}
@@ -328,6 +402,18 @@ func (f *Farm) ByMCPURL(url string) *Device {
 	defer f.mu.RUnlock()
 	for _, d := range f.devices {
 		if d.MCPURL == url {
+			return d
+		}
+	}
+	return nil
+}
+
+// ByJTAGLocator resolves a device by its JTAG/SWD debug-probe locator.
+func (f *Farm) ByJTAGLocator(path string) *Device {
+	f.mu.RLock()
+	defer f.mu.RUnlock()
+	for _, d := range f.devices {
+		if d.JTAGLocator == path {
 			return d
 		}
 	}
