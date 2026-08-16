@@ -12,23 +12,32 @@ import (
 
 	"example.com/embedded-loop-channel/api/convert"
 	channelv1 "example.com/embedded-loop-channel/api/gen/channelv1"
+	"example.com/embedded-loop-channel/batch"
 	"example.com/embedded-loop-channel/domain"
+	"example.com/embedded-loop-channel/farm"
 	"example.com/embedded-loop-channel/sdk"
 
 	"google.golang.org/grpc"
 )
 
-// Server adapts sdk.Client to the gRPC ConnectivityService.
+// Server adapts sdk.Client (and optionally a farm.Scheduler) to gRPC services.
 type Server struct {
 	channelv1.UnimplementedConnectivityServiceServer
-	client *sdk.Client
+	channelv1.UnimplementedFarmServiceServer
+	client    *sdk.Client
+	scheduler *farm.Scheduler
 }
 
 // NewServer builds a Server over the in-process client.
 func NewServer(c *sdk.Client) *Server { return &Server{client: c} }
 
-// Serve starts the gRPC server on addr and blocks until ctx is done. It
-// returns the underlying listener address.
+// WithScheduler attaches a device-farm scheduler, enabling FarmService RPCs.
+func (s *Server) WithScheduler(sched *farm.Scheduler) *Server {
+	s.scheduler = sched
+	return s
+}
+
+// Serve starts the gRPC server on addr and blocks until ctx is done.
 func (s *Server) Serve(ctx context.Context, addr string) error {
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
@@ -36,6 +45,9 @@ func (s *Server) Serve(ctx context.Context, addr string) error {
 	}
 	gs := grpc.NewServer()
 	channelv1.RegisterConnectivityServiceServer(gs, s)
+	if s.scheduler != nil {
+		channelv1.RegisterFarmServiceServer(gs, s)
+	}
 
 	done := make(chan struct{})
 	go func() {
@@ -48,6 +60,103 @@ func (s *Server) Serve(ctx context.Context, addr string) error {
 	}
 	<-done
 	return nil
+}
+
+// ---------------------------------------------------------------------------
+// FarmService
+// ---------------------------------------------------------------------------
+
+func (s *Server) SubmitTask(_ context.Context, req *channelv1.SubmitTaskRequest) (*channelv1.SubmitTaskResponse, error) {
+	if s.scheduler == nil {
+		return &channelv1.SubmitTaskResponse{Error: errToProto(errors.New("scheduler not configured"))}, nil
+	}
+	var devices []domain.DeviceID
+	for _, d := range req.Devices {
+		devices = append(devices, domain.DeviceID(d))
+	}
+	id, err := s.scheduler.Submit(batch.Request{
+		Capability:  domain.CapabilityName(req.Capability),
+		Parameters:  req.Parameters,
+		Devices:     devices,
+		Principal:   req.Principal,
+		Concurrency: int(req.Concurrency),
+	}, int(req.Priority))
+	if err != nil {
+		return &channelv1.SubmitTaskResponse{Error: errToProto(err)}, nil
+	}
+	return &channelv1.SubmitTaskResponse{TaskId: id}, nil
+}
+
+func (s *Server) GetTask(_ context.Context, req *channelv1.GetTaskRequest) (*channelv1.GetTaskResponse, error) {
+	if s.scheduler == nil {
+		return &channelv1.GetTaskResponse{Error: errToProto(errors.New("scheduler not configured"))}, nil
+	}
+	t, err := s.scheduler.Status(req.TaskId)
+	if err != nil {
+		return &channelv1.GetTaskResponse{Error: errToProto(err)}, nil
+	}
+	return &channelv1.GetTaskResponse{Task: taskToProto(t)}, nil
+}
+
+func (s *Server) ListTasks(context.Context, *channelv1.ListTasksRequest) (*channelv1.ListTasksResponse, error) {
+	resp := &channelv1.ListTasksResponse{}
+	if s.scheduler == nil {
+		return resp, nil
+	}
+	for _, t := range s.scheduler.List() {
+		resp.Tasks = append(resp.Tasks, taskToProto(t))
+	}
+	return resp, nil
+}
+
+func (s *Server) CancelTask(_ context.Context, req *channelv1.CancelTaskRequest) (*channelv1.CancelTaskResponse, error) {
+	if s.scheduler == nil {
+		return &channelv1.CancelTaskResponse{Error: errToProto(errors.New("scheduler not configured"))}, nil
+	}
+	if err := s.scheduler.Cancel(req.TaskId); err != nil {
+		return &channelv1.CancelTaskResponse{Error: errToProto(err)}, nil
+	}
+	return &channelv1.CancelTaskResponse{}, nil
+}
+
+func (s *Server) ListPool(context.Context, *channelv1.ListPoolRequest) (*channelv1.ListPoolResponse, error) {
+	resp := &channelv1.ListPoolResponse{}
+	if s.scheduler == nil {
+		return resp, nil
+	}
+	for _, e := range s.scheduler.PoolSnapshot() {
+		entry := &channelv1.PoolEntry{
+			DeviceId:    string(e.Device.ID),
+			Serial:      e.Device.Serial,
+			Busy:        e.Busy,
+			CurrentTask: e.CurrentTask,
+			LastState:   string(e.LastState),
+		}
+		if e.LastError != nil {
+			entry.LastError = convert.ErrorToProto(e.LastError)
+		}
+		resp.Entries = append(resp.Entries, entry)
+	}
+	return resp, nil
+}
+
+func taskToProto(t *farm.Task) *channelv1.Task {
+	p := &channelv1.Task{
+		Id:            t.ID,
+		State:         string(t.State),
+		Priority:      int32(t.Priority),
+		Capability:    string(t.Request.Capability),
+		Err:           t.Err,
+		SubmittedAtMs: t.SubmittedAt.UnixMilli(),
+		StartedAtMs:   t.StartedAt.UnixMilli(),
+		CompletedAtMs: t.CompletedAt.UnixMilli(),
+	}
+	if t.Summary != nil {
+		p.Total = int64(t.Summary.Total)
+		p.Succeeded = int64(t.Summary.Succeeded)
+		p.Failed = int64(t.Summary.Failed)
+	}
+	return p
 }
 
 // Discover triggers a scan and returns the observed devices.

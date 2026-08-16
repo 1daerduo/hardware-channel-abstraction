@@ -55,6 +55,14 @@ func main() {
 		runBatch(os.Args[2:])
 	case "queue":
 		runQueue(os.Args[2:])
+	case "submit":
+		runSubmit(os.Args[2:])
+	case "tasks":
+		runTasks(os.Args[2:])
+	case "task":
+		runTask(os.Args[2:])
+	case "pool":
+		runPool(os.Args[2:])
 	case "stream":
 		runStream(os.Args[2:])
 	case "help", "-h", "--help":
@@ -155,7 +163,10 @@ func grant(c *sdk.Client) {
 }
 
 // valueFlags are flags that consume a following argument as their value.
-var valueFlags = map[string]bool{"grpc": true, "serial": true, "baud": true, "tcp": true, "listen": true}
+var valueFlags = map[string]bool{
+	"grpc": true, "serial": true, "baud": true, "tcp": true, "listen": true,
+	"priority": true, "devices": true, "concurrency": true,
+}
 
 func flagName(a string) string {
 	a = strings.TrimLeft(a, "-")
@@ -217,11 +228,16 @@ func runServe(args []string) {
 	}
 	defer rt.Close()
 
-	srv := grpctransport.NewServer(rt.Client)
+	// 常驻农场调度器（任务队列 + 设备池）。
+	sched := farm.New(rt.Client, 4)
+	sched.Start()
+	defer sched.Stop()
+
+	srv := grpctransport.NewServer(rt.Client).WithScheduler(sched)
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	fmt.Printf("elc serve 监听 %s（Ctrl+C 退出）\n", *listen)
+	fmt.Printf("elc serve 监听 %s（ConnectivityService + FarmService，Ctrl+C 退出）\n", *listen)
 	if err := srv.Serve(ctx, *listen); err != nil {
 		fmt.Fprintf(os.Stderr, "serve: %v\n", err)
 		os.Exit(1)
@@ -474,6 +490,147 @@ func runBatch(args []string) {
 		}
 		fmt.Printf("  %-12s %s\n", r.Device.Serial, status)
 	}
+}
+
+// farmClientFromFlags returns a remote farm client (requires --grpc).
+func farmClientFromFlags(b backend) (*grpctransport.FarmClient, func(), error) {
+	if b.grpcAddr == "" {
+		return nil, nil, fmt.Errorf("需要 --grpc <addr> 连接到 elc serve")
+	}
+	conn, err := grpc.NewClient(b.grpcAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, nil, err
+	}
+	return grpctransport.NewFarmClient(conn), func() { _ = conn.Close() }, nil
+}
+
+func runSubmit(args []string) {
+	fs := flag.NewFlagSet("submit", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	priority := fs.Int("priority", 0, "任务优先级（越高越先）")
+	devices := fs.String("devices", "", "逗号分隔的设备 serial/ID（空=全部）")
+	conc := fs.Int("concurrency", 0, "任务内批量并发度")
+	_ = fs.Parse(reorderArgs(args))
+	if fs.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "用法: elc submit <capability> [k=v ...] [--priority N] [--devices a,b] --grpc <addr>")
+		os.Exit(2)
+	}
+
+	fc, cleanup, err := farmClientFromFlags(b)
+	if err != nil {
+		fatalf("%v", err)
+	}
+	defer cleanup()
+
+	params := map[string]string{}
+	for _, a := range fs.Args()[1:] {
+		if i := strings.Index(a, "="); i >= 0 {
+			params[a[:i]] = a[i+1:]
+		}
+	}
+	var devIDs []domain.DeviceID
+	if *devices != "" {
+		for _, s := range strings.Split(*devices, ",") {
+			if s = strings.TrimSpace(s); s != "" {
+				devIDs = append(devIDs, domain.DeviceID(s))
+			}
+		}
+	}
+
+	id, err := fc.Submit(context.Background(), batch.Request{
+		Capability:  domain.CapabilityName(fs.Arg(0)),
+		Parameters:  params,
+		Devices:     devIDs,
+		Principal:   principal,
+		Concurrency: *conc,
+	}, *priority)
+	if err != nil {
+		fatalf("提交失败: %v", err)
+	}
+	fmt.Println(id)
+}
+
+func runTasks(args []string) {
+	fs := flag.NewFlagSet("tasks", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	_ = fs.Parse(reorderArgs(args))
+
+	fc, cleanup, err := farmClientFromFlags(b)
+	if err != nil {
+		fatalf("%v", err)
+	}
+	defer cleanup()
+
+	tasks, err := fc.List(context.Background())
+	if err != nil {
+		fatalf("%v", err)
+	}
+	for _, t := range tasks {
+		fmt.Printf("%s  %-10s prio=%d cap=%s  (%d/%d/%d)%s\n",
+			t.ID, t.State, t.Priority, t.Capability, t.Total, t.Succeeded, t.Failed, errSuffix(t.Err))
+	}
+}
+
+func runTask(args []string) {
+	fs := flag.NewFlagSet("task", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	_ = fs.Parse(reorderArgs(args))
+	if fs.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "用法: elc task <task-id> --grpc <addr>")
+		os.Exit(2)
+	}
+
+	fc, cleanup, err := farmClientFromFlags(b)
+	if err != nil {
+		fatalf("%v", err)
+	}
+	defer cleanup()
+
+	t, err := fc.Status(context.Background(), fs.Arg(0))
+	if err != nil {
+		fatalf("%v", err)
+	}
+	fmt.Printf("id=%s state=%s prio=%d cap=%s\n", t.ID, t.State, t.Priority, t.Capability)
+	fmt.Printf("total=%d succeeded=%d failed=%d%s\n", t.Total, t.Succeeded, t.Failed, errSuffix(t.Err))
+}
+
+func runPool(args []string) {
+	fs := flag.NewFlagSet("pool", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	_ = fs.Parse(reorderArgs(args))
+
+	fc, cleanup, err := farmClientFromFlags(b)
+	if err != nil {
+		fatalf("%v", err)
+	}
+	defer cleanup()
+
+	pool, err := fc.Pool(context.Background())
+	if err != nil {
+		fatalf("%v", err)
+	}
+	for _, e := range pool {
+		busy := "idle"
+		if e.Busy {
+			busy = "busy"
+		}
+		last := e.LastState
+		if last == "" {
+			last = "-"
+		}
+		fmt.Printf("%-12s %-4s last=%-12s%s\n", e.Serial, busy, last, errSuffix(e.LastError))
+	}
+}
+
+func errSuffix(e string) string {
+	if e == "" {
+		return ""
+	}
+	return " err=" + e
 }
 
 func runQueue(args []string) {

@@ -26,6 +26,694 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type SubmitTaskRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Capability    string                 `protobuf:"bytes,1,opt,name=capability,proto3" json:"capability,omitempty"`
+	Parameters    map[string]string      `protobuf:"bytes,2,rep,name=parameters,proto3" json:"parameters,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Devices       []string               `protobuf:"bytes,3,rep,name=devices,proto3" json:"devices,omitempty"`
+	Principal     string                 `protobuf:"bytes,4,opt,name=principal,proto3" json:"principal,omitempty"`
+	Priority      int32                  `protobuf:"varint,5,opt,name=priority,proto3" json:"priority,omitempty"`
+	Concurrency   int32                  `protobuf:"varint,6,opt,name=concurrency,proto3" json:"concurrency,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubmitTaskRequest) Reset() {
+	*x = SubmitTaskRequest{}
+	mi := &file_channel_v1_service_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitTaskRequest) ProtoMessage() {}
+
+func (x *SubmitTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitTaskRequest.ProtoReflect.Descriptor instead.
+func (*SubmitTaskRequest) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *SubmitTaskRequest) GetCapability() string {
+	if x != nil {
+		return x.Capability
+	}
+	return ""
+}
+
+func (x *SubmitTaskRequest) GetParameters() map[string]string {
+	if x != nil {
+		return x.Parameters
+	}
+	return nil
+}
+
+func (x *SubmitTaskRequest) GetDevices() []string {
+	if x != nil {
+		return x.Devices
+	}
+	return nil
+}
+
+func (x *SubmitTaskRequest) GetPrincipal() string {
+	if x != nil {
+		return x.Principal
+	}
+	return ""
+}
+
+func (x *SubmitTaskRequest) GetPriority() int32 {
+	if x != nil {
+		return x.Priority
+	}
+	return 0
+}
+
+func (x *SubmitTaskRequest) GetConcurrency() int32 {
+	if x != nil {
+		return x.Concurrency
+	}
+	return 0
+}
+
+type SubmitTaskResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	Error         *Error                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SubmitTaskResponse) Reset() {
+	*x = SubmitTaskResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitTaskResponse) ProtoMessage() {}
+
+func (x *SubmitTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitTaskResponse.ProtoReflect.Descriptor instead.
+func (*SubmitTaskResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *SubmitTaskResponse) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *SubmitTaskResponse) GetError() *Error {
+	if x != nil {
+		return x.Error
+	}
+	return nil
+}
+
+type GetTaskRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTaskRequest) Reset() {
+	*x = GetTaskRequest{}
+	mi := &file_channel_v1_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTaskRequest) ProtoMessage() {}
+
+func (x *GetTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTaskRequest.ProtoReflect.Descriptor instead.
+func (*GetTaskRequest) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetTaskRequest) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+type Task struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	State         string                 `protobuf:"bytes,2,opt,name=state,proto3" json:"state,omitempty"`
+	Priority      int32                  `protobuf:"varint,3,opt,name=priority,proto3" json:"priority,omitempty"`
+	Capability    string                 `protobuf:"bytes,4,opt,name=capability,proto3" json:"capability,omitempty"`
+	Total         int64                  `protobuf:"varint,5,opt,name=total,proto3" json:"total,omitempty"`
+	Succeeded     int64                  `protobuf:"varint,6,opt,name=succeeded,proto3" json:"succeeded,omitempty"`
+	Failed        int64                  `protobuf:"varint,7,opt,name=failed,proto3" json:"failed,omitempty"`
+	Err           string                 `protobuf:"bytes,8,opt,name=err,proto3" json:"err,omitempty"`
+	SubmittedAtMs int64                  `protobuf:"varint,9,opt,name=submitted_at_ms,json=submittedAtMs,proto3" json:"submitted_at_ms,omitempty"`
+	StartedAtMs   int64                  `protobuf:"varint,10,opt,name=started_at_ms,json=startedAtMs,proto3" json:"started_at_ms,omitempty"`
+	CompletedAtMs int64                  `protobuf:"varint,11,opt,name=completed_at_ms,json=completedAtMs,proto3" json:"completed_at_ms,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Task) Reset() {
+	*x = Task{}
+	mi := &file_channel_v1_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Task) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Task) ProtoMessage() {}
+
+func (x *Task) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Task.ProtoReflect.Descriptor instead.
+func (*Task) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Task) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Task) GetState() string {
+	if x != nil {
+		return x.State
+	}
+	return ""
+}
+
+func (x *Task) GetPriority() int32 {
+	if x != nil {
+		return x.Priority
+	}
+	return 0
+}
+
+func (x *Task) GetCapability() string {
+	if x != nil {
+		return x.Capability
+	}
+	return ""
+}
+
+func (x *Task) GetTotal() int64 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *Task) GetSucceeded() int64 {
+	if x != nil {
+		return x.Succeeded
+	}
+	return 0
+}
+
+func (x *Task) GetFailed() int64 {
+	if x != nil {
+		return x.Failed
+	}
+	return 0
+}
+
+func (x *Task) GetErr() string {
+	if x != nil {
+		return x.Err
+	}
+	return ""
+}
+
+func (x *Task) GetSubmittedAtMs() int64 {
+	if x != nil {
+		return x.SubmittedAtMs
+	}
+	return 0
+}
+
+func (x *Task) GetStartedAtMs() int64 {
+	if x != nil {
+		return x.StartedAtMs
+	}
+	return 0
+}
+
+func (x *Task) GetCompletedAtMs() int64 {
+	if x != nil {
+		return x.CompletedAtMs
+	}
+	return 0
+}
+
+type GetTaskResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Task          *Task                  `protobuf:"bytes,1,opt,name=task,proto3" json:"task,omitempty"`
+	Error         *Error                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTaskResponse) Reset() {
+	*x = GetTaskResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTaskResponse) ProtoMessage() {}
+
+func (x *GetTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTaskResponse.ProtoReflect.Descriptor instead.
+func (*GetTaskResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetTaskResponse) GetTask() *Task {
+	if x != nil {
+		return x.Task
+	}
+	return nil
+}
+
+func (x *GetTaskResponse) GetError() *Error {
+	if x != nil {
+		return x.Error
+	}
+	return nil
+}
+
+type ListTasksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTasksRequest) Reset() {
+	*x = ListTasksRequest{}
+	mi := &file_channel_v1_service_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTasksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTasksRequest) ProtoMessage() {}
+
+func (x *ListTasksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTasksRequest.ProtoReflect.Descriptor instead.
+func (*ListTasksRequest) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{5}
+}
+
+type ListTasksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tasks         []*Task                `protobuf:"bytes,1,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTasksResponse) Reset() {
+	*x = ListTasksResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTasksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTasksResponse) ProtoMessage() {}
+
+func (x *ListTasksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTasksResponse.ProtoReflect.Descriptor instead.
+func (*ListTasksResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListTasksResponse) GetTasks() []*Task {
+	if x != nil {
+		return x.Tasks
+	}
+	return nil
+}
+
+type CancelTaskRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancelTaskRequest) Reset() {
+	*x = CancelTaskRequest{}
+	mi := &file_channel_v1_service_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancelTaskRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelTaskRequest) ProtoMessage() {}
+
+func (x *CancelTaskRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelTaskRequest.ProtoReflect.Descriptor instead.
+func (*CancelTaskRequest) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CancelTaskRequest) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+type CancelTaskResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Error         *Error                 `protobuf:"bytes,2,opt,name=error,proto3" json:"error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancelTaskResponse) Reset() {
+	*x = CancelTaskResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancelTaskResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelTaskResponse) ProtoMessage() {}
+
+func (x *CancelTaskResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelTaskResponse.ProtoReflect.Descriptor instead.
+func (*CancelTaskResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *CancelTaskResponse) GetError() *Error {
+	if x != nil {
+		return x.Error
+	}
+	return nil
+}
+
+type ListPoolRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListPoolRequest) Reset() {
+	*x = ListPoolRequest{}
+	mi := &file_channel_v1_service_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListPoolRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPoolRequest) ProtoMessage() {}
+
+func (x *ListPoolRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListPoolRequest.ProtoReflect.Descriptor instead.
+func (*ListPoolRequest) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{9}
+}
+
+type PoolEntry struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeviceId      string                 `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	Serial        string                 `protobuf:"bytes,2,opt,name=serial,proto3" json:"serial,omitempty"`
+	Busy          bool                   `protobuf:"varint,3,opt,name=busy,proto3" json:"busy,omitempty"`
+	CurrentTask   string                 `protobuf:"bytes,4,opt,name=current_task,json=currentTask,proto3" json:"current_task,omitempty"`
+	LastState     string                 `protobuf:"bytes,5,opt,name=last_state,json=lastState,proto3" json:"last_state,omitempty"`
+	LastError     *Error                 `protobuf:"bytes,6,opt,name=last_error,json=lastError,proto3" json:"last_error,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PoolEntry) Reset() {
+	*x = PoolEntry{}
+	mi := &file_channel_v1_service_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PoolEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PoolEntry) ProtoMessage() {}
+
+func (x *PoolEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PoolEntry.ProtoReflect.Descriptor instead.
+func (*PoolEntry) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *PoolEntry) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
+}
+
+func (x *PoolEntry) GetSerial() string {
+	if x != nil {
+		return x.Serial
+	}
+	return ""
+}
+
+func (x *PoolEntry) GetBusy() bool {
+	if x != nil {
+		return x.Busy
+	}
+	return false
+}
+
+func (x *PoolEntry) GetCurrentTask() string {
+	if x != nil {
+		return x.CurrentTask
+	}
+	return ""
+}
+
+func (x *PoolEntry) GetLastState() string {
+	if x != nil {
+		return x.LastState
+	}
+	return ""
+}
+
+func (x *PoolEntry) GetLastError() *Error {
+	if x != nil {
+		return x.LastError
+	}
+	return nil
+}
+
+type ListPoolResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Entries       []*PoolEntry           `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListPoolResponse) Reset() {
+	*x = ListPoolResponse{}
+	mi := &file_channel_v1_service_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListPoolResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListPoolResponse) ProtoMessage() {}
+
+func (x *ListPoolResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_channel_v1_service_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListPoolResponse.ProtoReflect.Descriptor instead.
+func (*ListPoolResponse) Descriptor() ([]byte, []int) {
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ListPoolResponse) GetEntries() []*PoolEntry {
+	if x != nil {
+		return x.Entries
+	}
+	return nil
+}
+
 type DiscoverRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -34,7 +722,7 @@ type DiscoverRequest struct {
 
 func (x *DiscoverRequest) Reset() {
 	*x = DiscoverRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[0]
+	mi := &file_channel_v1_service_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +734,7 @@ func (x *DiscoverRequest) String() string {
 func (*DiscoverRequest) ProtoMessage() {}
 
 func (x *DiscoverRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[0]
+	mi := &file_channel_v1_service_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +747,7 @@ func (x *DiscoverRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DiscoverRequest.ProtoReflect.Descriptor instead.
 func (*DiscoverRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{0}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{12}
 }
 
 type DiscoverResponse struct {
@@ -72,7 +760,7 @@ type DiscoverResponse struct {
 
 func (x *DiscoverResponse) Reset() {
 	*x = DiscoverResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[1]
+	mi := &file_channel_v1_service_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -84,7 +772,7 @@ func (x *DiscoverResponse) String() string {
 func (*DiscoverResponse) ProtoMessage() {}
 
 func (x *DiscoverResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[1]
+	mi := &file_channel_v1_service_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -97,7 +785,7 @@ func (x *DiscoverResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DiscoverResponse.ProtoReflect.Descriptor instead.
 func (*DiscoverResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{1}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *DiscoverResponse) GetDevices() []*Device {
@@ -122,7 +810,7 @@ type ListDevicesRequest struct {
 
 func (x *ListDevicesRequest) Reset() {
 	*x = ListDevicesRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[2]
+	mi := &file_channel_v1_service_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -134,7 +822,7 @@ func (x *ListDevicesRequest) String() string {
 func (*ListDevicesRequest) ProtoMessage() {}
 
 func (x *ListDevicesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[2]
+	mi := &file_channel_v1_service_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -147,7 +835,7 @@ func (x *ListDevicesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDevicesRequest.ProtoReflect.Descriptor instead.
 func (*ListDevicesRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{2}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{14}
 }
 
 type ListDevicesResponse struct {
@@ -160,7 +848,7 @@ type ListDevicesResponse struct {
 
 func (x *ListDevicesResponse) Reset() {
 	*x = ListDevicesResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[3]
+	mi := &file_channel_v1_service_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -172,7 +860,7 @@ func (x *ListDevicesResponse) String() string {
 func (*ListDevicesResponse) ProtoMessage() {}
 
 func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[3]
+	mi := &file_channel_v1_service_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -185,7 +873,7 @@ func (x *ListDevicesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListDevicesResponse.ProtoReflect.Descriptor instead.
 func (*ListDevicesResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{3}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *ListDevicesResponse) GetDevices() []*Device {
@@ -211,7 +899,7 @@ type ListCapabilitiesRequest struct {
 
 func (x *ListCapabilitiesRequest) Reset() {
 	*x = ListCapabilitiesRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[4]
+	mi := &file_channel_v1_service_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -223,7 +911,7 @@ func (x *ListCapabilitiesRequest) String() string {
 func (*ListCapabilitiesRequest) ProtoMessage() {}
 
 func (x *ListCapabilitiesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[4]
+	mi := &file_channel_v1_service_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -236,7 +924,7 @@ func (x *ListCapabilitiesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCapabilitiesRequest.ProtoReflect.Descriptor instead.
 func (*ListCapabilitiesRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{4}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *ListCapabilitiesRequest) GetDeviceId() string {
@@ -256,7 +944,7 @@ type ListCapabilitiesResponse struct {
 
 func (x *ListCapabilitiesResponse) Reset() {
 	*x = ListCapabilitiesResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[5]
+	mi := &file_channel_v1_service_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -268,7 +956,7 @@ func (x *ListCapabilitiesResponse) String() string {
 func (*ListCapabilitiesResponse) ProtoMessage() {}
 
 func (x *ListCapabilitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[5]
+	mi := &file_channel_v1_service_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -281,7 +969,7 @@ func (x *ListCapabilitiesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCapabilitiesResponse.ProtoReflect.Descriptor instead.
 func (*ListCapabilitiesResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{5}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *ListCapabilitiesResponse) GetCapabilities() []string {
@@ -308,7 +996,7 @@ type DescribeCapabilitiesResponse struct {
 
 func (x *DescribeCapabilitiesResponse) Reset() {
 	*x = DescribeCapabilitiesResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[6]
+	mi := &file_channel_v1_service_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -320,7 +1008,7 @@ func (x *DescribeCapabilitiesResponse) String() string {
 func (*DescribeCapabilitiesResponse) ProtoMessage() {}
 
 func (x *DescribeCapabilitiesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[6]
+	mi := &file_channel_v1_service_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -333,7 +1021,7 @@ func (x *DescribeCapabilitiesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DescribeCapabilitiesResponse.ProtoReflect.Descriptor instead.
 func (*DescribeCapabilitiesResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{6}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *DescribeCapabilitiesResponse) GetCapabilities() []*Capability {
@@ -361,7 +1049,7 @@ type CreateSessionRequest struct {
 
 func (x *CreateSessionRequest) Reset() {
 	*x = CreateSessionRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[7]
+	mi := &file_channel_v1_service_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +1061,7 @@ func (x *CreateSessionRequest) String() string {
 func (*CreateSessionRequest) ProtoMessage() {}
 
 func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[7]
+	mi := &file_channel_v1_service_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +1074,7 @@ func (x *CreateSessionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSessionRequest.ProtoReflect.Descriptor instead.
 func (*CreateSessionRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{7}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *CreateSessionRequest) GetPrincipal() string {
@@ -420,7 +1108,7 @@ type CreateSessionResponse struct {
 
 func (x *CreateSessionResponse) Reset() {
 	*x = CreateSessionResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[8]
+	mi := &file_channel_v1_service_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -432,7 +1120,7 @@ func (x *CreateSessionResponse) String() string {
 func (*CreateSessionResponse) ProtoMessage() {}
 
 func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[8]
+	mi := &file_channel_v1_service_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -445,7 +1133,7 @@ func (x *CreateSessionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateSessionResponse.ProtoReflect.Descriptor instead.
 func (*CreateSessionResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{8}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *CreateSessionResponse) GetSession() *Session {
@@ -476,7 +1164,7 @@ type ExecuteRequest struct {
 
 func (x *ExecuteRequest) Reset() {
 	*x = ExecuteRequest{}
-	mi := &file_channel_v1_service_proto_msgTypes[9]
+	mi := &file_channel_v1_service_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -488,7 +1176,7 @@ func (x *ExecuteRequest) String() string {
 func (*ExecuteRequest) ProtoMessage() {}
 
 func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[9]
+	mi := &file_channel_v1_service_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -501,7 +1189,7 @@ func (x *ExecuteRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExecuteRequest.ProtoReflect.Descriptor instead.
 func (*ExecuteRequest) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{9}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ExecuteRequest) GetCapability() string {
@@ -556,7 +1244,7 @@ type ExecuteResponse struct {
 
 func (x *ExecuteResponse) Reset() {
 	*x = ExecuteResponse{}
-	mi := &file_channel_v1_service_proto_msgTypes[10]
+	mi := &file_channel_v1_service_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -568,7 +1256,7 @@ func (x *ExecuteResponse) String() string {
 func (*ExecuteResponse) ProtoMessage() {}
 
 func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_channel_v1_service_proto_msgTypes[10]
+	mi := &file_channel_v1_service_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -581,7 +1269,7 @@ func (x *ExecuteResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExecuteResponse.ProtoReflect.Descriptor instead.
 func (*ExecuteResponse) Descriptor() ([]byte, []int) {
-	return file_channel_v1_service_proto_rawDescGZIP(), []int{10}
+	return file_channel_v1_service_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ExecuteResponse) GetResult() *OperationResult {
@@ -602,7 +1290,63 @@ var File_channel_v1_service_proto protoreflect.FileDescriptor
 
 const file_channel_v1_service_proto_rawDesc = "" +
 	"\n" +
-	"\x18channel/v1/service.proto\x12\x17embeddedloop.channel.v1\x1a\x18channel/v1/channel.proto\"\x11\n" +
+	"\x18channel/v1/service.proto\x12\x17embeddedloop.channel.v1\x1a\x18channel/v1/channel.proto\"\xc4\x02\n" +
+	"\x11SubmitTaskRequest\x12\x1e\n" +
+	"\n" +
+	"capability\x18\x01 \x01(\tR\n" +
+	"capability\x12Z\n" +
+	"\n" +
+	"parameters\x18\x02 \x03(\v2:.embeddedloop.channel.v1.SubmitTaskRequest.ParametersEntryR\n" +
+	"parameters\x12\x18\n" +
+	"\adevices\x18\x03 \x03(\tR\adevices\x12\x1c\n" +
+	"\tprincipal\x18\x04 \x01(\tR\tprincipal\x12\x1a\n" +
+	"\bpriority\x18\x05 \x01(\x05R\bpriority\x12 \n" +
+	"\vconcurrency\x18\x06 \x01(\x05R\vconcurrency\x1a=\n" +
+	"\x0fParametersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"c\n" +
+	"\x12SubmitTaskResponse\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\x124\n" +
+	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error\")\n" +
+	"\x0eGetTaskRequest\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\"\xba\x02\n" +
+	"\x04Task\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05state\x18\x02 \x01(\tR\x05state\x12\x1a\n" +
+	"\bpriority\x18\x03 \x01(\x05R\bpriority\x12\x1e\n" +
+	"\n" +
+	"capability\x18\x04 \x01(\tR\n" +
+	"capability\x12\x14\n" +
+	"\x05total\x18\x05 \x01(\x03R\x05total\x12\x1c\n" +
+	"\tsucceeded\x18\x06 \x01(\x03R\tsucceeded\x12\x16\n" +
+	"\x06failed\x18\a \x01(\x03R\x06failed\x12\x10\n" +
+	"\x03err\x18\b \x01(\tR\x03err\x12&\n" +
+	"\x0fsubmitted_at_ms\x18\t \x01(\x03R\rsubmittedAtMs\x12\"\n" +
+	"\rstarted_at_ms\x18\n" +
+	" \x01(\x03R\vstartedAtMs\x12&\n" +
+	"\x0fcompleted_at_ms\x18\v \x01(\x03R\rcompletedAtMs\"z\n" +
+	"\x0fGetTaskResponse\x121\n" +
+	"\x04task\x18\x01 \x01(\v2\x1d.embeddedloop.channel.v1.TaskR\x04task\x124\n" +
+	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error\"\x12\n" +
+	"\x10ListTasksRequest\"H\n" +
+	"\x11ListTasksResponse\x123\n" +
+	"\x05tasks\x18\x01 \x03(\v2\x1d.embeddedloop.channel.v1.TaskR\x05tasks\",\n" +
+	"\x11CancelTaskRequest\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\"J\n" +
+	"\x12CancelTaskResponse\x124\n" +
+	"\x05error\x18\x02 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\x05error\"\x11\n" +
+	"\x0fListPoolRequest\"\xd5\x01\n" +
+	"\tPoolEntry\x12\x1b\n" +
+	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\x12\x16\n" +
+	"\x06serial\x18\x02 \x01(\tR\x06serial\x12\x12\n" +
+	"\x04busy\x18\x03 \x01(\bR\x04busy\x12!\n" +
+	"\fcurrent_task\x18\x04 \x01(\tR\vcurrentTask\x12\x1d\n" +
+	"\n" +
+	"last_state\x18\x05 \x01(\tR\tlastState\x12=\n" +
+	"\n" +
+	"last_error\x18\x06 \x01(\v2\x1e.embeddedloop.channel.v1.ErrorR\tlastError\"P\n" +
+	"\x10ListPoolResponse\x12<\n" +
+	"\aentries\x18\x01 \x03(\v2\".embeddedloop.channel.v1.PoolEntryR\aentries\"\x11\n" +
 	"\x0fDiscoverRequest\"\x83\x01\n" +
 	"\x10DiscoverResponse\x129\n" +
 	"\adevices\x18\x01 \x03(\v2\x1f.embeddedloop.channel.v1.DeviceR\adevices\x124\n" +
@@ -650,7 +1394,15 @@ const file_channel_v1_service_proto_rawDesc = "" +
 	"\x10ListCapabilities\x120.embeddedloop.channel.v1.ListCapabilitiesRequest\x1a1.embeddedloop.channel.v1.ListCapabilitiesResponse\x12\x7f\n" +
 	"\x14DescribeCapabilities\x120.embeddedloop.channel.v1.ListCapabilitiesRequest\x1a5.embeddedloop.channel.v1.DescribeCapabilitiesResponse\x12n\n" +
 	"\rCreateSession\x12-.embeddedloop.channel.v1.CreateSessionRequest\x1a..embeddedloop.channel.v1.CreateSessionResponse\x12\\\n" +
-	"\aExecute\x12'.embeddedloop.channel.v1.ExecuteRequest\x1a(.embeddedloop.channel.v1.ExecuteResponseB?Z=example.com/embedded-loop-channel/api/gen/channelv1;channelv1b\x06proto3"
+	"\aExecute\x12'.embeddedloop.channel.v1.ExecuteRequest\x1a(.embeddedloop.channel.v1.ExecuteResponse2\xfe\x03\n" +
+	"\vFarmService\x12e\n" +
+	"\n" +
+	"SubmitTask\x12*.embeddedloop.channel.v1.SubmitTaskRequest\x1a+.embeddedloop.channel.v1.SubmitTaskResponse\x12\\\n" +
+	"\aGetTask\x12'.embeddedloop.channel.v1.GetTaskRequest\x1a(.embeddedloop.channel.v1.GetTaskResponse\x12b\n" +
+	"\tListTasks\x12).embeddedloop.channel.v1.ListTasksRequest\x1a*.embeddedloop.channel.v1.ListTasksResponse\x12e\n" +
+	"\n" +
+	"CancelTask\x12*.embeddedloop.channel.v1.CancelTaskRequest\x1a+.embeddedloop.channel.v1.CancelTaskResponse\x12_\n" +
+	"\bListPool\x12(.embeddedloop.channel.v1.ListPoolRequest\x1a).embeddedloop.channel.v1.ListPoolResponseB?Z=example.com/embedded-loop-channel/api/gen/channelv1;channelv1b\x06proto3"
 
 var (
 	file_channel_v1_service_proto_rawDescOnce sync.Once
@@ -664,56 +1416,87 @@ func file_channel_v1_service_proto_rawDescGZIP() []byte {
 	return file_channel_v1_service_proto_rawDescData
 }
 
-var file_channel_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_channel_v1_service_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_channel_v1_service_proto_goTypes = []any{
-	(*DiscoverRequest)(nil),              // 0: embeddedloop.channel.v1.DiscoverRequest
-	(*DiscoverResponse)(nil),             // 1: embeddedloop.channel.v1.DiscoverResponse
-	(*ListDevicesRequest)(nil),           // 2: embeddedloop.channel.v1.ListDevicesRequest
-	(*ListDevicesResponse)(nil),          // 3: embeddedloop.channel.v1.ListDevicesResponse
-	(*ListCapabilitiesRequest)(nil),      // 4: embeddedloop.channel.v1.ListCapabilitiesRequest
-	(*ListCapabilitiesResponse)(nil),     // 5: embeddedloop.channel.v1.ListCapabilitiesResponse
-	(*DescribeCapabilitiesResponse)(nil), // 6: embeddedloop.channel.v1.DescribeCapabilitiesResponse
-	(*CreateSessionRequest)(nil),         // 7: embeddedloop.channel.v1.CreateSessionRequest
-	(*CreateSessionResponse)(nil),        // 8: embeddedloop.channel.v1.CreateSessionResponse
-	(*ExecuteRequest)(nil),               // 9: embeddedloop.channel.v1.ExecuteRequest
-	(*ExecuteResponse)(nil),              // 10: embeddedloop.channel.v1.ExecuteResponse
-	nil,                                  // 11: embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
-	(*Device)(nil),                       // 12: embeddedloop.channel.v1.Device
-	(*Error)(nil),                        // 13: embeddedloop.channel.v1.Error
-	(*Capability)(nil),                   // 14: embeddedloop.channel.v1.Capability
-	(*Session)(nil),                      // 15: embeddedloop.channel.v1.Session
-	(*OperationResult)(nil),              // 16: embeddedloop.channel.v1.OperationResult
+	(*SubmitTaskRequest)(nil),            // 0: embeddedloop.channel.v1.SubmitTaskRequest
+	(*SubmitTaskResponse)(nil),           // 1: embeddedloop.channel.v1.SubmitTaskResponse
+	(*GetTaskRequest)(nil),               // 2: embeddedloop.channel.v1.GetTaskRequest
+	(*Task)(nil),                         // 3: embeddedloop.channel.v1.Task
+	(*GetTaskResponse)(nil),              // 4: embeddedloop.channel.v1.GetTaskResponse
+	(*ListTasksRequest)(nil),             // 5: embeddedloop.channel.v1.ListTasksRequest
+	(*ListTasksResponse)(nil),            // 6: embeddedloop.channel.v1.ListTasksResponse
+	(*CancelTaskRequest)(nil),            // 7: embeddedloop.channel.v1.CancelTaskRequest
+	(*CancelTaskResponse)(nil),           // 8: embeddedloop.channel.v1.CancelTaskResponse
+	(*ListPoolRequest)(nil),              // 9: embeddedloop.channel.v1.ListPoolRequest
+	(*PoolEntry)(nil),                    // 10: embeddedloop.channel.v1.PoolEntry
+	(*ListPoolResponse)(nil),             // 11: embeddedloop.channel.v1.ListPoolResponse
+	(*DiscoverRequest)(nil),              // 12: embeddedloop.channel.v1.DiscoverRequest
+	(*DiscoverResponse)(nil),             // 13: embeddedloop.channel.v1.DiscoverResponse
+	(*ListDevicesRequest)(nil),           // 14: embeddedloop.channel.v1.ListDevicesRequest
+	(*ListDevicesResponse)(nil),          // 15: embeddedloop.channel.v1.ListDevicesResponse
+	(*ListCapabilitiesRequest)(nil),      // 16: embeddedloop.channel.v1.ListCapabilitiesRequest
+	(*ListCapabilitiesResponse)(nil),     // 17: embeddedloop.channel.v1.ListCapabilitiesResponse
+	(*DescribeCapabilitiesResponse)(nil), // 18: embeddedloop.channel.v1.DescribeCapabilitiesResponse
+	(*CreateSessionRequest)(nil),         // 19: embeddedloop.channel.v1.CreateSessionRequest
+	(*CreateSessionResponse)(nil),        // 20: embeddedloop.channel.v1.CreateSessionResponse
+	(*ExecuteRequest)(nil),               // 21: embeddedloop.channel.v1.ExecuteRequest
+	(*ExecuteResponse)(nil),              // 22: embeddedloop.channel.v1.ExecuteResponse
+	nil,                                  // 23: embeddedloop.channel.v1.SubmitTaskRequest.ParametersEntry
+	nil,                                  // 24: embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
+	(*Error)(nil),                        // 25: embeddedloop.channel.v1.Error
+	(*Device)(nil),                       // 26: embeddedloop.channel.v1.Device
+	(*Capability)(nil),                   // 27: embeddedloop.channel.v1.Capability
+	(*Session)(nil),                      // 28: embeddedloop.channel.v1.Session
+	(*OperationResult)(nil),              // 29: embeddedloop.channel.v1.OperationResult
 }
 var file_channel_v1_service_proto_depIdxs = []int32{
-	12, // 0: embeddedloop.channel.v1.DiscoverResponse.devices:type_name -> embeddedloop.channel.v1.Device
-	13, // 1: embeddedloop.channel.v1.DiscoverResponse.error:type_name -> embeddedloop.channel.v1.Error
-	12, // 2: embeddedloop.channel.v1.ListDevicesResponse.devices:type_name -> embeddedloop.channel.v1.Device
-	13, // 3: embeddedloop.channel.v1.ListDevicesResponse.error:type_name -> embeddedloop.channel.v1.Error
-	13, // 4: embeddedloop.channel.v1.ListCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
-	14, // 5: embeddedloop.channel.v1.DescribeCapabilitiesResponse.capabilities:type_name -> embeddedloop.channel.v1.Capability
-	13, // 6: embeddedloop.channel.v1.DescribeCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
-	15, // 7: embeddedloop.channel.v1.CreateSessionResponse.session:type_name -> embeddedloop.channel.v1.Session
-	13, // 8: embeddedloop.channel.v1.CreateSessionResponse.error:type_name -> embeddedloop.channel.v1.Error
-	11, // 9: embeddedloop.channel.v1.ExecuteRequest.parameters:type_name -> embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
-	16, // 10: embeddedloop.channel.v1.ExecuteResponse.result:type_name -> embeddedloop.channel.v1.OperationResult
-	13, // 11: embeddedloop.channel.v1.ExecuteResponse.error:type_name -> embeddedloop.channel.v1.Error
-	0,  // 12: embeddedloop.channel.v1.ConnectivityService.Discover:input_type -> embeddedloop.channel.v1.DiscoverRequest
-	2,  // 13: embeddedloop.channel.v1.ConnectivityService.ListDevices:input_type -> embeddedloop.channel.v1.ListDevicesRequest
-	4,  // 14: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
-	4,  // 15: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
-	7,  // 16: embeddedloop.channel.v1.ConnectivityService.CreateSession:input_type -> embeddedloop.channel.v1.CreateSessionRequest
-	9,  // 17: embeddedloop.channel.v1.ConnectivityService.Execute:input_type -> embeddedloop.channel.v1.ExecuteRequest
-	1,  // 18: embeddedloop.channel.v1.ConnectivityService.Discover:output_type -> embeddedloop.channel.v1.DiscoverResponse
-	3,  // 19: embeddedloop.channel.v1.ConnectivityService.ListDevices:output_type -> embeddedloop.channel.v1.ListDevicesResponse
-	5,  // 20: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:output_type -> embeddedloop.channel.v1.ListCapabilitiesResponse
-	6,  // 21: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:output_type -> embeddedloop.channel.v1.DescribeCapabilitiesResponse
-	8,  // 22: embeddedloop.channel.v1.ConnectivityService.CreateSession:output_type -> embeddedloop.channel.v1.CreateSessionResponse
-	10, // 23: embeddedloop.channel.v1.ConnectivityService.Execute:output_type -> embeddedloop.channel.v1.ExecuteResponse
-	18, // [18:24] is the sub-list for method output_type
-	12, // [12:18] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	23, // 0: embeddedloop.channel.v1.SubmitTaskRequest.parameters:type_name -> embeddedloop.channel.v1.SubmitTaskRequest.ParametersEntry
+	25, // 1: embeddedloop.channel.v1.SubmitTaskResponse.error:type_name -> embeddedloop.channel.v1.Error
+	3,  // 2: embeddedloop.channel.v1.GetTaskResponse.task:type_name -> embeddedloop.channel.v1.Task
+	25, // 3: embeddedloop.channel.v1.GetTaskResponse.error:type_name -> embeddedloop.channel.v1.Error
+	3,  // 4: embeddedloop.channel.v1.ListTasksResponse.tasks:type_name -> embeddedloop.channel.v1.Task
+	25, // 5: embeddedloop.channel.v1.CancelTaskResponse.error:type_name -> embeddedloop.channel.v1.Error
+	25, // 6: embeddedloop.channel.v1.PoolEntry.last_error:type_name -> embeddedloop.channel.v1.Error
+	10, // 7: embeddedloop.channel.v1.ListPoolResponse.entries:type_name -> embeddedloop.channel.v1.PoolEntry
+	26, // 8: embeddedloop.channel.v1.DiscoverResponse.devices:type_name -> embeddedloop.channel.v1.Device
+	25, // 9: embeddedloop.channel.v1.DiscoverResponse.error:type_name -> embeddedloop.channel.v1.Error
+	26, // 10: embeddedloop.channel.v1.ListDevicesResponse.devices:type_name -> embeddedloop.channel.v1.Device
+	25, // 11: embeddedloop.channel.v1.ListDevicesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	25, // 12: embeddedloop.channel.v1.ListCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	27, // 13: embeddedloop.channel.v1.DescribeCapabilitiesResponse.capabilities:type_name -> embeddedloop.channel.v1.Capability
+	25, // 14: embeddedloop.channel.v1.DescribeCapabilitiesResponse.error:type_name -> embeddedloop.channel.v1.Error
+	28, // 15: embeddedloop.channel.v1.CreateSessionResponse.session:type_name -> embeddedloop.channel.v1.Session
+	25, // 16: embeddedloop.channel.v1.CreateSessionResponse.error:type_name -> embeddedloop.channel.v1.Error
+	24, // 17: embeddedloop.channel.v1.ExecuteRequest.parameters:type_name -> embeddedloop.channel.v1.ExecuteRequest.ParametersEntry
+	29, // 18: embeddedloop.channel.v1.ExecuteResponse.result:type_name -> embeddedloop.channel.v1.OperationResult
+	25, // 19: embeddedloop.channel.v1.ExecuteResponse.error:type_name -> embeddedloop.channel.v1.Error
+	12, // 20: embeddedloop.channel.v1.ConnectivityService.Discover:input_type -> embeddedloop.channel.v1.DiscoverRequest
+	14, // 21: embeddedloop.channel.v1.ConnectivityService.ListDevices:input_type -> embeddedloop.channel.v1.ListDevicesRequest
+	16, // 22: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
+	16, // 23: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:input_type -> embeddedloop.channel.v1.ListCapabilitiesRequest
+	19, // 24: embeddedloop.channel.v1.ConnectivityService.CreateSession:input_type -> embeddedloop.channel.v1.CreateSessionRequest
+	21, // 25: embeddedloop.channel.v1.ConnectivityService.Execute:input_type -> embeddedloop.channel.v1.ExecuteRequest
+	0,  // 26: embeddedloop.channel.v1.FarmService.SubmitTask:input_type -> embeddedloop.channel.v1.SubmitTaskRequest
+	2,  // 27: embeddedloop.channel.v1.FarmService.GetTask:input_type -> embeddedloop.channel.v1.GetTaskRequest
+	5,  // 28: embeddedloop.channel.v1.FarmService.ListTasks:input_type -> embeddedloop.channel.v1.ListTasksRequest
+	7,  // 29: embeddedloop.channel.v1.FarmService.CancelTask:input_type -> embeddedloop.channel.v1.CancelTaskRequest
+	9,  // 30: embeddedloop.channel.v1.FarmService.ListPool:input_type -> embeddedloop.channel.v1.ListPoolRequest
+	13, // 31: embeddedloop.channel.v1.ConnectivityService.Discover:output_type -> embeddedloop.channel.v1.DiscoverResponse
+	15, // 32: embeddedloop.channel.v1.ConnectivityService.ListDevices:output_type -> embeddedloop.channel.v1.ListDevicesResponse
+	17, // 33: embeddedloop.channel.v1.ConnectivityService.ListCapabilities:output_type -> embeddedloop.channel.v1.ListCapabilitiesResponse
+	18, // 34: embeddedloop.channel.v1.ConnectivityService.DescribeCapabilities:output_type -> embeddedloop.channel.v1.DescribeCapabilitiesResponse
+	20, // 35: embeddedloop.channel.v1.ConnectivityService.CreateSession:output_type -> embeddedloop.channel.v1.CreateSessionResponse
+	22, // 36: embeddedloop.channel.v1.ConnectivityService.Execute:output_type -> embeddedloop.channel.v1.ExecuteResponse
+	1,  // 37: embeddedloop.channel.v1.FarmService.SubmitTask:output_type -> embeddedloop.channel.v1.SubmitTaskResponse
+	4,  // 38: embeddedloop.channel.v1.FarmService.GetTask:output_type -> embeddedloop.channel.v1.GetTaskResponse
+	6,  // 39: embeddedloop.channel.v1.FarmService.ListTasks:output_type -> embeddedloop.channel.v1.ListTasksResponse
+	8,  // 40: embeddedloop.channel.v1.FarmService.CancelTask:output_type -> embeddedloop.channel.v1.CancelTaskResponse
+	11, // 41: embeddedloop.channel.v1.FarmService.ListPool:output_type -> embeddedloop.channel.v1.ListPoolResponse
+	31, // [31:42] is the sub-list for method output_type
+	20, // [20:31] is the sub-list for method input_type
+	20, // [20:20] is the sub-list for extension type_name
+	20, // [20:20] is the sub-list for extension extendee
+	0,  // [0:20] is the sub-list for field type_name
 }
 
 func init() { file_channel_v1_service_proto_init() }
@@ -728,9 +1511,9 @@ func file_channel_v1_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_channel_v1_service_proto_rawDesc), len(file_channel_v1_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   25,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_channel_v1_service_proto_goTypes,
 		DependencyIndexes: file_channel_v1_service_proto_depIdxs,
