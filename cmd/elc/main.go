@@ -27,6 +27,7 @@ import (
 	"github.com/1daerduo/hardware-channel-abstraction/domain"
 	"github.com/1daerduo/hardware-channel-abstraction/fake"
 	"github.com/1daerduo/hardware-channel-abstraction/farm"
+	"github.com/1daerduo/hardware-channel-abstraction/mcphead"
 	"github.com/1daerduo/hardware-channel-abstraction/runtime"
 	"github.com/1daerduo/hardware-channel-abstraction/sdk"
 	grpctransport "github.com/1daerduo/hardware-channel-abstraction/transport/grpc"
@@ -70,6 +71,8 @@ func main() {
 		runPool(os.Args[2:])
 	case "stream":
 		runStream(os.Args[2:])
+	case "mcp":
+		runMCP(os.Args[2:])
 	case "help", "-h", "--help":
 		usage()
 	default:
@@ -706,6 +709,31 @@ func runQueue(args []string) {
 			last = "-"
 		}
 		fmt.Printf("  %-12s %-4s last=%s\n", e.Device.Serial, busy, last)
+	}
+}
+
+func runMCP(args []string) {
+	fs := flag.NewFlagSet("mcp", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	_ = fs.Parse(reorderArgs(args))
+	if b.grpcAddr != "" {
+		fmt.Fprintln(os.Stderr, "mcp 使用进程内后端（stdio），不支持 --grpc")
+		os.Exit(1)
+	}
+
+	rt, err := b.bootstrap() // 已 grant "cli"
+	if err != nil {
+		fatalf("启动失败: %v", err)
+	}
+	defer rt.Close()
+
+	s, err := mcphead.Build(rt.Client, mcphead.Options{Principal: principal})
+	if err != nil {
+		fatalf("构建 MCP 失败: %v", err)
+	}
+	if err := mcphead.Serve(s); err != nil {
+		fatalf("mcp serve: %v", err)
 	}
 }
 

@@ -125,14 +125,40 @@ elc tasks --grpc localhost:8080                          # 轮询
 elc pool  --grpc localhost:8080                          # 看设备池
 ```
 
-## 8. 环境准备（WSL + CH340 串口示例）
+## 8. MCP head（AI Agent 操作设备）
+
+把设备能力暴露成标准 MCP tools，Claude / Cursor 等 Agent 能「看到并调用」设备能力：
+
+```bash
+elc mcp                          # 内置 fake 设备
+elc mcp --serial /dev/ttyUSB0    # 真实串口设备
+```
+
+在 Claude / Cursor 的 MCP 配置里登记它（Claude Desktop `claude_desktop_config.json`）：
+
+```json
+{
+  "mcpServers": {
+    "hardware-channel": {
+      "command": "elc",
+      "args": ["mcp", "--serial", "/dev/ttyUSB0"]
+    }
+  }
+}
+```
+
+之后 Agent 就能看到并调用 `device.info.get` / `device.flash` / `device.execute` 等工具，
+每个工具的 `input_schema` = 能力 JSON Schema + 一个 `device` 目标参数。
+**工具调用走完整 Core 治理**：deny-by-default、HIGH/CRITICAL 需审批、全链路审计。
+
+## 9. 环境准备（WSL + CH340 串口示例）
 
 1. Windows 管理员 PowerShell：`usbipd bind --busid 1-1` + `usbipd attach --wsl --busid 1-1`（把 CH340 透传进 WSL）。
 2. WSL 里确认 `/dev/ttyUSB0` 出现。
 3. 加 dialout 组：`sudo usermod -aG dialout $USER`，重启 WSL 生效；或临时 `sg dialout -c 'elc ...'`。
 4. 验证：`elc exec --serial /dev/ttyUSB0 /dev/ttyUSB0 device.execute command="version"`。
 
-## 9. 拓展新协议 / 新设备
+## 10. 拓展新协议 / 新设备
 
 遵循 skill **`add-channel-protocol`**（`.claude/skills/add-channel-protocol/SKILL.md`）：
 评估连接形态 → 实现 `sdk.Plugin`（字节流用 `transport/console`）→ runtime 注册一行 → 合同测试。
