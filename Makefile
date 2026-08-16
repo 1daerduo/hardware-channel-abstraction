@@ -1,6 +1,6 @@
 GO      ?= go
 PROTOC  ?= protoc
-VERSION ?= v0.1.0
+VERSION ?= v0.1.3
 LDFLAGS  = -s -w -X main.version=$(VERSION)
 
 .PHONY: build test run vet fmt proto release clean
