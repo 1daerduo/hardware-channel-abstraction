@@ -23,6 +23,7 @@ import (
 	"syscall"
 	"time"
 
+	"example.com/embedded-loop-channel/batch"
 	"example.com/embedded-loop-channel/domain"
 	"example.com/embedded-loop-channel/fake"
 	"example.com/embedded-loop-channel/runtime"
@@ -49,6 +50,8 @@ func main() {
 		runCaps(os.Args[2:])
 	case "exec":
 		runExec(os.Args[2:])
+	case "batch":
+		runBatch(os.Args[2:])
 	case "stream":
 		runStream(os.Args[2:])
 	case "help", "-h", "--help":
@@ -68,6 +71,7 @@ func usage() {
   elc devices [--json]                                    发现并列出设备
   elc caps <device> [--json]                              列出能力（含描述+schema）
   elc exec <device> <capability> [k=v ...] [--json]       执行能力
+  elc batch <capability> [k=v ...] [--devices a,b] [--concurrency N] [--json]   批量执行
   elc stream <device> <capability>                        流式控制台（进程内）
 
 后端 flags:
@@ -385,6 +389,86 @@ func runExec(args []string) {
 	}
 	if len(res.ArtifactRefs) > 0 {
 		fmt.Println("产物:", res.ArtifactRefs)
+	}
+}
+
+func runBatch(args []string) {
+	fs := flag.NewFlagSet("batch", flag.ExitOnError)
+	var b backend
+	b.addFlags(fs)
+	jsonMode := fs.Bool("json", false, "JSON 输出")
+	devicesFlag := fs.String("devices", "", "逗号分隔的设备 serial/ID（空=全部）")
+	conc := fs.Int("concurrency", 0, "并发度（0=设备数）")
+	_ = fs.Parse(reorderArgs(args))
+	if fs.NArg() < 1 {
+		fmt.Fprintln(os.Stderr, "用法: elc batch <capability> [k=v ...] [--devices a,b] [--concurrency N] [--json]")
+		os.Exit(2)
+	}
+
+	api, cleanup, err := b.connect()
+	if err != nil {
+		fatalf("连接失败: %v", err)
+	}
+	defer cleanup()
+
+	params := map[string]string{}
+	for _, a := range fs.Args()[1:] {
+		if i := strings.Index(a, "="); i >= 0 {
+			params[a[:i]] = a[i+1:]
+		}
+	}
+
+	var deviceIDs []domain.DeviceID
+	if *devicesFlag != "" {
+		for _, s := range strings.Split(*devicesFlag, ",") {
+			if s = strings.TrimSpace(s); s != "" {
+				deviceIDs = append(deviceIDs, domain.DeviceID(s))
+			}
+		}
+	}
+
+	sum, err := batch.New(api).Run(context.Background(), batch.Request{
+		Capability:  domain.CapabilityName(fs.Arg(0)),
+		Parameters:  params,
+		Devices:     deviceIDs,
+		Principal:   principal,
+		Concurrency: *conc,
+	})
+	if err != nil {
+		fatalf("批量执行失败: %v", err)
+	}
+
+	if *jsonMode {
+		type row struct {
+			Device string `json:"device"`
+			State  string `json:"state"`
+			Error  string `json:"error,omitempty"`
+		}
+		rows := make([]row, 0, len(sum.Results))
+		for _, r := range sum.Results {
+			e := ""
+			if r.Error != nil {
+				e = r.Error.Error()
+			}
+			rows = append(rows, row{r.Device.Serial, string(r.State), e})
+		}
+		printJSON(map[string]any{
+			"capability": fs.Arg(0), "total": sum.Total, "succeeded": sum.Succeeded, "failed": sum.Failed,
+			"results": rows,
+		})
+		return
+	}
+
+	fmt.Printf("批量 %s: %d 台设备, 成功 %d, 失败 %d\n", fs.Arg(0), sum.Total, sum.Succeeded, sum.Failed)
+	for _, r := range sum.Results {
+		status := "OK"
+		if r.State != domain.OperationSucceeded {
+			status = "FAIL " + string(r.State)
+			if r.Error != nil {
+				status += " (" + r.Error.Error() + ")"
+			}
+		}
+		fmt.Printf("  %-12s %s\n", r.Device.Serial, status)
 	}
 }
 
