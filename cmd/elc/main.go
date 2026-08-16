@@ -119,21 +119,35 @@ type backend struct {
 
 func (b *backend) addFlags(fs *flag.FlagSet) {
 	fs.StringVar(&b.grpcAddr, "grpc", "", "gRPC 服务地址")
-	fs.StringVar(&b.serial, "serial", "", "真实串口路径")
+	fs.StringVar(&b.serial, "serial", "", "串口路径，逗号分隔多个")
 	fs.IntVar(&b.baud, "baud", 115200, "串口波特率")
-	fs.StringVar(&b.tcpAddr, "tcp", "", "TCP 设备地址")
+	fs.StringVar(&b.tcpAddr, "tcp", "", "TCP 设备地址，逗号分隔多个")
 }
 
 func (b *backend) runtimeOpts() []runtime.Option {
 	var opts []runtime.Option
-	if b.serial != "" {
-		opts = append(opts, runtime.WithRealSerial(b.serial, b.baud))
+	for _, p := range splitList(b.serial) {
+		opts = append(opts, runtime.WithRealSerial(p, b.baud))
 	}
-	if b.tcpAddr != "" {
-		opts = append(opts, runtime.WithTCPDevice(b.tcpAddr))
+	for _, addr := range splitList(b.tcpAddr) {
+		opts = append(opts, runtime.WithTCPDevice(addr))
 	}
-	opts = append(opts, runtime.WithDevices(fake.NewDevice("fake-001", "demo-board", "1.0", "usb:1-1.1")))
+	// 只有没指定任何真实设备时，才加一台内置 fake 设备，便于无 flags 演示。
+	if b.serial == "" && b.tcpAddr == "" {
+		opts = append(opts, runtime.WithDevices(fake.NewDevice("fake-001", "demo-board", "1.0", "usb:1-1.1")))
+	}
 	return opts
+}
+
+// splitList splits a comma-separated flag into trimmed non-empty items.
+func splitList(s string) []string {
+	var out []string
+	for _, item := range strings.Split(s, ",") {
+		if item = strings.TrimSpace(item); item != "" {
+			out = append(out, item)
+		}
+	}
+	return out
 }
 
 // bootstrap builds an in-process runtime and authorizes the CLI principal.
