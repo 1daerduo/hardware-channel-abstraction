@@ -37,12 +37,17 @@ import (
 
 const principal = "cli"
 
+// version is injected at build time via -ldflags "-X main.version=vX.Y.Z".
+var version = "dev"
+
 func main() {
 	if len(os.Args) < 2 {
 		usage()
 		os.Exit(2)
 	}
 	switch os.Args[1] {
+	case "version", "--version", "-V":
+		fmt.Println("elc " + version)
 	case "serve":
 		runServe(os.Args[2:])
 	case "devices", "discover":
