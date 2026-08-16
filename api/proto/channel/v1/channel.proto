@@ -1,0 +1,250 @@
+// Canonical Schema / IDL for the Embedded Loop Channel Abstraction.
+//
+// This file is the single machine-readable source of truth for the wire
+// contract (Design doc 14). It is intentionally versioned independently from
+// the Go domain model, the Plugin SDK and each Capability schema.
+syntax = "proto3";
+
+package embeddedloop.channel.v1;
+
+option go_package = "example.com/embedded-loop-channel/api/gen/channelv1;channelv1";
+
+// ---------------------------------------------------------------------------
+// Enumerations
+// ---------------------------------------------------------------------------
+
+// DeviceState is the business-level state of a Device.
+enum DeviceState {
+  DEVICE_STATE_UNSPECIFIED = 0;
+  DEVICE_STATE_ONLINE = 1;
+  DEVICE_STATE_OFFLINE = 2;
+  DEVICE_STATE_RECOVERING = 3;
+  DEVICE_STATE_QUARANTINED = 4;
+}
+
+// ChannelState is the runtime lifecycle of a Channel.
+enum ChannelState {
+  CHANNEL_STATE_UNSPECIFIED = 0;
+  CHANNEL_STATE_UNRESOLVED = 1;
+  CHANNEL_STATE_OPENING = 2;
+  CHANNEL_STATE_READY = 3;
+  CHANNEL_STATE_DEGRADED = 4;
+  CHANNEL_STATE_RECONNECTING = 5;
+  CHANNEL_STATE_CLOSED = 6;
+  CHANNEL_STATE_FAILED = 7;
+}
+
+// OperationState is the lifecycle of a single Operation (Design doc 06).
+enum OperationState {
+  OPERATION_STATE_UNSPECIFIED = 0;
+  OPERATION_STATE_CREATED = 1;
+  OPERATION_STATE_VALIDATING = 2;
+  OPERATION_STATE_WAITING_RESOURCE = 3;
+  OPERATION_STATE_RESOLVING = 4;
+  OPERATION_STATE_RUNNING = 5;
+  OPERATION_STATE_VERIFYING = 6;
+  OPERATION_STATE_SUCCEEDED = 7;
+  OPERATION_STATE_VALIDATION_FAILED = 8;
+  OPERATION_STATE_RESOURCE_FAILED = 9;
+  OPERATION_STATE_RESOLVE_FAILED = 10;
+  OPERATION_STATE_RUN_FAILED = 11;
+  OPERATION_STATE_VERIFY_FAILED = 12;
+  OPERATION_STATE_CANCELLED = 13;
+  OPERATION_STATE_TIMEOUT = 14;
+  OPERATION_STATE_UNKNOWN = 15;
+}
+
+// SessionState is the lifecycle of a Session (Design doc 07).
+enum SessionState {
+  SESSION_STATE_UNSPECIFIED = 0;
+  SESSION_STATE_CREATED = 1;
+  SESSION_STATE_ACTIVE = 2;
+  SESSION_STATE_DEGRADED = 3;
+  SESSION_STATE_RECONNECTING = 4;
+  SESSION_STATE_CLOSED = 5;
+  SESSION_STATE_EXPIRED = 6;
+  SESSION_STATE_REVOKED = 7;
+  SESSION_STATE_FAILED = 8;
+}
+
+// ErrorCategory is the unified error taxonomy (Design doc 09).
+enum ErrorCategory {
+  ERROR_CATEGORY_UNSPECIFIED = 0;
+  ERROR_CATEGORY_VALIDATION = 1;
+  ERROR_CATEGORY_AUTHORIZATION = 2;
+  ERROR_CATEGORY_RESOURCE = 3;
+  ERROR_CATEGORY_DISCOVERY = 4;
+  ERROR_CATEGORY_CONNECTION = 5;
+  ERROR_CATEGORY_PROTOCOL = 6;
+  ERROR_CATEGORY_DEVICE_STATE = 7;
+  ERROR_CATEGORY_EXECUTION = 8;
+  ERROR_CATEGORY_VERIFICATION = 9;
+  ERROR_CATEGORY_TIMEOUT = 10;
+  ERROR_CATEGORY_CANCELLATION = 11;
+  ERROR_CATEGORY_INTERNAL = 12;
+  ERROR_CATEGORY_UNKNOWN = 13;
+}
+
+// RiskLevel drives Policy/Permission/Approval (Design docs 06, 10).
+enum RiskLevel {
+  RISK_LEVEL_UNSPECIFIED = 0;
+  RISK_LEVEL_LOW = 1;
+  RISK_LEVEL_MEDIUM = 2;
+  RISK_LEVEL_HIGH = 3;
+  RISK_LEVEL_CRITICAL = 4;
+}
+
+// LockMode is the concurrency mode of a resource lease (Design doc 07).
+enum LockMode {
+  LOCK_MODE_UNSPECIFIED = 0;
+  LOCK_MODE_SHARED = 1;
+  LOCK_MODE_EXCLUSIVE = 2;
+}
+
+// ---------------------------------------------------------------------------
+// Core objects
+// ---------------------------------------------------------------------------
+
+message Device {
+  string device_id = 1;
+  string serial = 2;
+  string model = 3;
+  DeviceState state = 4;
+  map<string, string> properties = 5;
+  repeated string endpoint_ids = 6;
+  int64 observed_at_ms = 7;
+}
+
+message Endpoint {
+  string endpoint_id = 1;
+  string device_id = 2;
+  string endpoint_type = 3;
+  string locator = 4;
+  string transport = 5;
+  map<string, string> attributes = 6;
+  string source = 7;
+}
+
+message ChannelDescriptor {
+  string channel_id = 1;
+  string plugin_id = 2;
+  string channel_type = 3;
+  string endpoint_id = 4;
+  string device_id = 5;
+  ChannelState state = 6;
+  bool healthy = 7;
+  int64 cost = 8;
+  repeated string capabilities = 9;
+}
+
+message Capability {
+  string name = 1;
+  string version = 2;
+  string input_schema = 3;
+  string output_schema = 4;
+  RiskLevel risk_level = 5;
+  bool idempotent = 6;
+  repeated string resource_requirements = 7;
+  repeated string supported_channel_types = 8;
+}
+
+message OperationRequest {
+  string operation_id = 1;
+  string capability = 2;
+  string target = 3;
+  string session_id = 4;
+  map<string, string> parameters = 5;
+  string idempotency_key = 6;
+  int64 deadline_ms = 7;
+  // Optional channel-type override for advanced diagnostics; empty means the
+  // Resolver chooses (Design doc 11 §15).
+  string channel_type = 8;
+}
+
+message OperationResult {
+  string operation_id = 1;
+  OperationState state = 2;
+  string output = 3;
+  Error error = 4;
+  repeated string evidence_refs = 5;
+  repeated string artifact_refs = 6;
+  int64 started_at_ms = 7;
+  int64 completed_at_ms = 8;
+}
+
+message Error {
+  string code = 1;
+  ErrorCategory category = 2;
+  string message = 3;
+  bool retryable = 4;
+  bool recoverable = 5;
+  string severity = 6;
+  string source = 7;
+  map<string, string> details = 8;
+}
+
+message Session {
+  string session_id = 1;
+  string principal = 2;
+  string device_id = 3;
+  string channel_id = 4;
+  SessionState state = 5;
+  int64 expires_at_ms = 6;
+  repeated string permissions = 7;
+}
+
+message ResourceRecord {
+  string resource_id = 1;
+  string type = 2;
+  string device_id = 3;
+}
+
+message LeaseRecord {
+  string lease_id = 1;
+  string resource_id = 2;
+  string holder = 3;
+  LockMode mode = 4;
+  int64 expires_at_ms = 5;
+}
+
+message EventEnvelope {
+  string event_id = 1;
+  string event_type = 2;
+  string event_version = 3;
+  string producer = 4;
+  string subject = 5;
+  int64 sequence = 6;
+  int64 occurred_at_ms = 7;
+  int64 emitted_at_ms = 8;
+  string operation_id = 9;
+  string payload = 10;
+}
+
+message Artifact {
+  string artifact_id = 1;
+  string type = 2;
+  string uri = 3;
+  string checksum = 4;
+  int64 size_bytes = 5;
+  string content_type = 6;
+  string operation_id = 7;
+}
+
+message Evidence {
+  string evidence_id = 1;
+  string name = 2;
+  string value = 3;
+  string artifact_ref = 4;
+  string operation_id = 5;
+}
+
+message PluginManifest {
+  string id = 1;
+  string version = 2;
+  string api_version = 3;
+  string protocol = 4;
+  repeated string capabilities = 5;
+  repeated string transports = 6;
+  repeated string recovery_actions = 7;
+  string trust_level = 8;
+}

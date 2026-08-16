@@ -1,0 +1,67 @@
+// ConnectivityService is the canonical cross-service Unified API contract
+// (Design docs 03, 14). It is a thin, transport-level projection of the
+// in-process Unified API: every RPC maps 1:1 onto the sdk.ConnectivityAPI
+// interface, so the abstraction stays transport-agnostic.
+syntax = "proto3";
+
+package embeddedloop.channel.v1;
+
+option go_package = "example.com/embedded-loop-channel/api/gen/channelv1;channelv1";
+
+import "channel/v1/channel.proto";
+
+service ConnectivityService {
+  rpc Discover(DiscoverRequest) returns (DiscoverResponse);
+  rpc ListDevices(ListDevicesRequest) returns (ListDevicesResponse);
+  rpc ListCapabilities(ListCapabilitiesRequest) returns (ListCapabilitiesResponse);
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionResponse);
+  rpc Execute(ExecuteRequest) returns (ExecuteResponse);
+}
+
+message DiscoverRequest {}
+
+message DiscoverResponse {
+  repeated Device devices = 1;
+  Error error = 2;
+}
+
+message ListDevicesRequest {}
+
+message ListDevicesResponse {
+  repeated Device devices = 1;
+  Error error = 2;
+}
+
+message ListCapabilitiesRequest {
+  string device_id = 1;
+}
+
+message ListCapabilitiesResponse {
+  repeated string capabilities = 1;
+  Error error = 2;
+}
+
+message CreateSessionRequest {
+  string principal = 1;
+  string device_id = 2;
+  int64 ttl_ms = 3;
+}
+
+message CreateSessionResponse {
+  Session session = 1;
+  Error error = 2;
+}
+
+message ExecuteRequest {
+  string capability = 1;
+  string target = 2;
+  string session_id = 3;
+  map<string, string> parameters = 4;
+  string channel_type = 5;
+  string idempotency_key = 6;
+}
+
+message ExecuteResponse {
+  OperationResult result = 1;
+  Error error = 2;
+}
