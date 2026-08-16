@@ -69,9 +69,12 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
   Channel Plugin SPI (plugin/sdk)      ← 协议隔离层
         │   ├─ plugin/adb   (USB/ADB)
         │   ├─ plugin/uart  (串口控制台)
+        │   ├─ plugin/tcp   (TCP 控制台)
         │   └─ plugin/mcp   (远程服务)
         ↓
-  Transport (fake 模拟 / transport/serial 真实串口)
+  Transport（fake 模拟 / transport/console 通用字节流控制台
+             ├─ transport/serial 真实串口
+             └─ transport/tcp    真实 TCP）
         ↓
   Device / Endpoint (domain)
 ```
@@ -93,7 +96,8 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 | 统一抽象链 | Endpoint→Channel→Capability→Operation + 全领域模型 | 02 |
 | 统一 API | `sdk.ConnectivityAPI` 接口（进程内 + gRPC 远程双实现） | 03 |
 | Plugin SPI | Probe/Open/Invoke/Health/Observe/Recover/Cancel/Stream | 04,12,16 |
-| 三协议接入 | ADB / UART / MCP，Core 零改动 + Contract Test | 12,24 |
+| 四协议接入 | ADB / UART / TCP / MCP，Core 零改动 + Contract Test | 12,24 |
+| 通用字节流控制台 | `transport/console`（任意 io.ReadWriteCloser 上的单读泵+命令回显+流式） | 08,12 |
 | 发现 + 热插拔 | Discovery/Refresh/Watch + 身份关联 + 冲突隔离(Quarantine) | 05 |
 | 能力选路 | Capability→Channel 确定性排序 + override | 05,12 |
 | 可靠执行 | 状态机 + 幂等 + 异步(Start/Wait) + 取消(Cancel) | 06 |
@@ -129,8 +133,11 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 
 ### 6.2 新增一种「传输」（真实设备替代 fake）
 
-实现 `plugin/sdk.ConsoleDevice`（或 `StreamProvider`），在 runtime 的 resolver/scanner 登记。
-Plugin 逻辑一行不改——`plugin/uart` 同时驱动 `fake.Device` 与真实串口就是证明。
+- **字节流类**（串口/TCP/SSH/蓝牙SPP）：接一个 `io.ReadWriteCloser`，包进 `transport/console.New` 即可。
+  `transport/serial`（串口）与 `transport/tcp`（TCP）各只有 ~5 行薄包装，逻辑全复用。
+- **非字节流类**：实现 `plugin/sdk.ConsoleDevice`（或 `StreamProvider`），在 runtime 的 resolver/scanner 登记。
+
+Plugin 逻辑一行不改——`plugin/uart` 同时驱动 `fake.Device` 与真实串口、`plugin/tcp` 驱动真实 TCP，都是证明。
 
 ### 6.3 新增一个「Capability」
 
@@ -168,5 +175,7 @@ Plugin 逻辑一行不改——`plugin/uart` 同时驱动 `fake.Device` 与真�
 ## 9. 验证
 
 - `go build ./...`、`go vet ./...`、`go test ./...` 全绿。
-- 78 个 Go 文件、51 个测试，覆盖 Contract / Unit / Architecture / Mutation。
+- 89 个 Go 文件、覆盖 Contract / Unit / Architecture / Mutation。
 - 真机：i.MX6ULL EVK @ U-Boot 2016.03，`device.execute` + `device.log` 流式控制台实测通过。
+- TCP：模拟 TCP 控制台设备 → Discover → `device.info.get/reboot/execute` 全链路实测通过
+  （`transport/console` 用 net.Pipe 验证控制台逻辑，不依赖真实串口/TCP）。
