@@ -96,6 +96,9 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 
 ## 如何拓展一种新协议（便携拓展）
 
+> 📄 接入方完整规范见 **[docs/PLUGIN-SPEC.md](docs/PLUGIN-SPEC.md)**（Channel Plugin SPI 规范 v1.0）；
+> 从零开始的插件骨架见 `plugin/_template/`（复制改名即可开始）。
+
 架构的红线：**协议差异只进 Plugin；core/sdk 不出现协议名、不依赖具体插件。**
 新增一种连接方式（例如 JTAG / TCP / 新 Vendor）只需：
 
