@@ -6,7 +6,7 @@ Go + Protobuf 实现的「嵌入式 Loop 通道抽象层」MVP 骨架，忠实�
 ## 一句话
 
 上层（Embedded Loop / Agent / CLI / SDK）通过**统一 API** 访问异构嵌入式设备，
-把 ADB / UART / JTAG / TCP / MCP 等协议差异隔离在 **Channel Plugin SPI** 之后。
+把 ADB / UART / TCP / MCP / JTAG / Modbus 等协议差异隔离在 **Channel Plugin SPI** 之后。
 
 核心抽象链：**Endpoint → Channel → Capability → Operation**；
 Session / Lock / Policy / Health / Event / Artifact / Recovery 提供工程治理。
@@ -23,11 +23,16 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
   Connectivity Core (core/*)
         ↓
   Channel Plugin SPI (plugin/sdk)
-        │   ├─ plugin/adb   (USB/ADB)
-        │   ├─ plugin/uart  (串口控制台)
-        │   └─ plugin/mcp   (远程服务)
+        │   ├─ plugin/adb    (USB/ADB)
+        │   ├─ plugin/uart   (串口控制台)
+        │   ├─ plugin/tcp    (TCP 控制台)
+        │   ├─ plugin/mcp    (远程服务)
+        │   ├─ plugin/jtag   (JTAG/SWD 调试控制面)
+        │   └─ plugin/modbus (Modbus TCP 寄存器)
         ↓
-  Transport (fake 模拟 / transport/serial 真实串口)
+  Transport (fake 模拟 / transport/console 通用字节流控制台
+              ├─ transport/serial 真实串口
+              └─ transport/tcp    真实 TCP)
         ↓
   Device / Endpoint (domain)
 ```
@@ -41,12 +46,18 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 | `domain/` | Device/Endpoint/Channel/Capability/Operation/Session/Resource/Error/Event/Artifact | 02, 06, 07, 08, 09 |
 | `plugin/sdk` | Plugin SPI 契约 + Manifest + ConsoleDevice/Stream/Canceller | 04, 12, 16 |
 | `plugin/registry` | 插件注册/加载/校验 | 12 |
+| `plugin/_template` | 从零开始的插件骨架（复制改名即接入，`_` 前缀不参与构建） | SPEC |
 | `plugin/adb` | 参考 ADB-like Plugin（USB/ADB） | 12 |
 | `plugin/uart` | 参考 UART/串口 Plugin（串口控制台 + 流式） | 12, 24 |
-| `plugin/mcp` | 参考 MCP 远程服务 Plugin（第三种协议） | 12, 24 |
-| `transport/serial` | 真实串口 ConsoleDevice（U-Boot 命令行/回显/单读泵流式） | 12 |
+| `plugin/tcp` | 参考 TCP Plugin（字节流控制台） | 12 |
+| `plugin/mcp` | 参考 MCP 远程服务 Plugin | 12, 24 |
+| `plugin/jtag` | 参考 JTAG/SWD 调试控制面 Plugin（halt/resume/read/write memory） | 新增 |
+| `plugin/modbus` | 参考 Modbus TCP Plugin（FC 0x03/0x04/0x06 寄存器） | 新增 |
+| `transport/console` | 通用字节流控制台（任意 io.ReadWriteCloser 单读泵 + 回显 + 流式） | 08, 12 |
+| `transport/serial` | 真实串口 ConsoleDevice（U-Boot 命令行/回显） | 12 |
+| `transport/tcp` | 真实 TCP ConsoleDevice（~5 行薄包装） | 12 |
 | `transport/grpc` | gRPC 传输（ConnectivityService 薄适配 + 远程客户端） | 03, 14 |
-| `fake/` | 内存设备模拟器（Fake Device，USB-ADB + UART + MCP 三 Endpoint） | 17, 18 |
+| `fake/` | 内存设备模拟器（USB-ADB + UART + MCP + JTAG 调试面 + ModbusServer） | 17, 18 |
 | `core/discovery` | 发现 + 身份关联 + 热插拔 Refresh/Watch + 冲突隔离 | 05 |
 | `core/resolver` | 能力 → Channel 选路（确定性排序 + override） | 05, 12 |
 | `core/session` | 会话生命周期 | 07 |
@@ -57,11 +68,17 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 | `core/security` | 认证(AuthN) + deny-by-default + 资源范围 + 密钥 + 审批 + 审计 | 10 |
 | `core/recovery` | 错误分类 + L0~L6 恢复阶梯 + State Reconciliation | 09 |
 | `sdk/` | 统一 API（ConnectivityAPI 接口 + 客户端） | 03, 15 |
-| `runtime/` | 装配根（Bootstrap） | 13 §38 |
-| `examples/goldenpath` | Golden Path 可运行示例（三协议模拟） | 13 §44 |
+| `runtime/` | 装配根（Bootstrap，唯一允许 import 具体插件） | 13 §38 |
+| `batch/` | 批量编排头：一个能力跨多设备并发执行 + 聚合结果 | 新增 |
+| `farm/` | 设备农场调度器：优先级任务队列 + 设备池状态（FarmService） | 11 |
+| `mcphead/` | 增长生态头：把设备能力暴露成 MCP tools（AI Agent 执行层） | 新增 |
+| `docs/` | 接入规范（PLUGIN-SPEC.md）等文档 | SPEC |
+| `cmd/elc` | 命令行（消费者之头：直接 / 服务 / 库三种模式） | — |
+| `examples/goldenpath` | Golden Path 可运行示例（ADB/UART/MCP 三协议模拟） | 13 §44 |
 | `examples/realserial` | 真实串口驱动示例（真机 U-Boot + 流式） | 12 |
-| `tests/contract` | 可复用的 Plugin Contract Test（三协议） | 17 |
-| `tests/unit` | 领域/选路/锁/幂等/转换/异步/安全/gRPC 测试 | 17 |
+| `examples/tcpdevice` | 模拟 TCP 控制台设备示例 | 12 |
+| `tests/contract` | 可复用的 Plugin Contract Test（六协议） | 17 |
+| `tests/unit` | 领域/选路/锁/幂等/转换/异步/安全/gRPC/Modbus/JTAG 测试 | 17 |
 | `tests/arch` | 架构门禁（依赖方向 + 协议特判静态检查） | 17 §15 |
 
 ## 关键设计不变量（已实现）
@@ -82,7 +99,8 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 | 统一抽象链 | Endpoint → Channel → Capability → Operation + 全领域模型 | 02 |
 | 统一 API | `sdk.ConnectivityAPI` 接口（进程内 + gRPC 远程两种实现） | 03 |
 | Plugin SPI | `plugin/sdk`：Probe/Open/Invoke/Health/Observe/Recover/Cancel/Stream | 04, 12, 16 |
-| 三协议接入 | ADB / UART / MCP，Core 零改动 + Contract Test | 12, 24 |
+| 六协议接入 | ADB / UART / TCP / MCP / JTAG / Modbus，Core 零改动 + Contract Test | 12, 24 |
+| 结构化协议 | Modbus TCP 寄存器（FC 0x03/0x04/0x06）+ JTAG/SWD 调试控制面（halt/resume/read/write memory） | 新增 |
 | 发现 + 热插拔 | Discovery/Refresh/Watch + 身份关联 + 冲突隔离(Quarantine) | 05 |
 | 能力选路 | Capability → Channel 确定性排序 + override | 05, 12 |
 | 可靠执行 | Operation 状态机 + 幂等 + 异步(Start/Wait) + 取消(Cancel) | 06 |
@@ -100,7 +118,7 @@ Consumer (Loop / Agent / CLI)          ← 只面向 ConnectivityAPI（抽象）
 > 从零开始的插件骨架见 `plugin/_template/`（复制改名即可开始）。
 
 架构的红线：**协议差异只进 Plugin；core/sdk 不出现协议名、不依赖具体插件。**
-新增一种连接方式（例如 JTAG / TCP / 新 Vendor）只需：
+新增一种连接方式（例如 BLE / CAN / 新 Vendor）只需：
 
 1. 新建 `plugin/<proto>/`，实现 `plugin/sdk.Plugin`（含 `Manifest` / `Probe` /
    `Open/Close` / `Invoke` / `Health` / `Observe` / `Recover` / 可选 `Cancel`/`Stream`）。
@@ -206,7 +224,7 @@ cursor / close_reason**。串口 Console 用单读泵（唯一 reader），`Exec
 - **已完成（本仓库）**：核心抽象链、统一 API（进程内 + gRPC）、Plugin SPI、
   Discovery/热插拔/冲突隔离、Resolver、Session/Lock/Lease、Operation（同步/异步/取消）、
   Event/Artifact/Evidence/流式、Recovery L0~L6 + 对账、安全（认证/资源范围/密钥/审批/审计）、
-  三种参考 Plugin（ADB/UART/MCP）、真机验证、Contract/Unit/Architecture/Mutation 测试。
+  六种参考 Plugin（ADB/UART/TCP/MCP/JTAG/Modbus）、真机验证、Contract/Unit/Architecture/Mutation 测试。
 - **下一步（Beta）**：真实 ADB/MCP 客户端替换 `fake.Farm`、Artifact Retention/过期、
   完整 Approval 工作流、真实设备 E2E 全矩阵。
 - **Production**：多租户、Plugin 沙箱、动态升级、审计不可变存储、HA。
